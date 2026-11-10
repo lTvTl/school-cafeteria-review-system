@@ -1,3 +1,6 @@
 /.metadata/
+/Servers/
+**/target/
 **/root-context.xml
+
 
