@@ -33,6 +33,135 @@
     <!-- Custom Fonts -->
     <link href="/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+    <style>
+        /* 1. 따뜻한 크림/오렌지 컬러 팔레트 적용 */
+        body {
+            font-size: 16px;
+            background-color: #FFF8F0;
+            color: #3D312A;
+        }
+        a {
+            color: #E65C00;
+        }
+        a:hover, a:focus {
+            color: #B34700;
+        }
+
+        /* 2. 컨셉 B: 화이트/크림 상단바 & 오렌지 배지 로고 */
+        .navbar-default {
+            background-color: #FFFDF9;
+            border-color: #FFE0C2;
+        }
+        .navbar-brand {
+            font-size: 22px;
+            font-weight: bold;
+            height: 60px;
+            line-height: 30px;
+            color: #3D312A !important;
+        }
+        .brand-badge {
+            display: inline-block;
+            background-color: #FF7A00;
+            color: #FFFFFF;
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        .navbar-top-links li a {
+            padding: 18px 20px;
+            min-height: 60px;
+            font-size: 18px;
+            color: #FF7A00;
+        }
+        .navbar-top-links li a:hover,
+        .navbar-top-links li a:focus,
+        .navbar-top-links .open > a {
+            background-color: #FFF0E0 !important;
+            color: #E65C00;
+        }
+        .navbar-top-links .dropdown-menu li a {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #3D312A;
+        }
+
+        /* 좌측 사이드바 및 알약(Pill) 형태 메뉴 강조 */
+        @media (min-width: 768px) {
+            .sidebar {
+                width: 280px;
+                margin-top: 61px;
+                background-color: #FFF8F0;
+            }
+            #page-wrapper {
+                margin: 0 0 0 280px;
+                padding: 15px 40px;
+                min-height: 800px;
+                background-color: #FFFFFF;
+                border-left: 1px solid #FFE0C2;
+            }
+        }
+        .sidebar ul li {
+            border-bottom: 1px solid #FFE8D1;
+        }
+        .sidebar ul li a {
+            padding: 14px 20px;
+            margin: 6px 12px;
+            border-radius: 25px;
+            font-size: 18px;
+            color: #3D312A;
+        }
+        .sidebar ul li a:hover,
+        .sidebar ul li a:focus {
+            background-color: #FFE8D1;
+            color: #E65C00;
+        }
+        .sidebar ul li a.active {
+            background-color: #FF7A00 !important;
+            color: #FFFFFF !important;
+            font-weight: bold;
+        }
+        .sidebar .nav-second-level li a {
+            padding: 10px 20px 10px 40px;
+            margin: 4px 12px;
+            font-size: 16px;
+        }
+
+        /* 본문 기본 크기 및 구분선 색상 */
+        .page-header {
+            font-size: 32px;
+            margin: 30px 0 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #FFE0C2;
+            color: #3D312A;
+        }
+        .panel-heading {
+            font-size: 18px;
+            padding: 14px 20px;
+        }
+        .panel-body {
+            padding: 25px;
+            font-size: 16px;
+        }
+        .btn {
+            font-size: 15px;
+            padding: 8px 16px;
+        }
+        .btn-xs {
+            font-size: 13px;
+            padding: 4px 10px;
+        }
+        .form-control {
+            font-size: 16px;
+            height: 40px;
+        }
+        .table > thead > tr > th,
+        .table > tbody > tr > td {
+            padding: 12px 15px;
+            font-size: 16px;
+        }
+    </style>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -55,225 +184,25 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">SB Admin v2.0</a>
+                <a class="navbar-brand" href="/main">
+                    <span class="brand-badge"><i class="fa fa-cutlery"></i></span>학교식당 리뷰 시스템
+                </a>
             </div>
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-messages">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>Read All Messages</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-messages -->
-                </li>
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-tasks fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-tasks">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 1</strong>
-                                        <span class="pull-right text-muted">40% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                            <span class="sr-only">40% Complete (success)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 2</strong>
-                                        <span class="pull-right text-muted">20% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                                            <span class="sr-only">20% Complete</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 3</strong>
-                                        <span class="pull-right text-muted">60% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                            <span class="sr-only">60% Complete (warning)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 4</strong>
-                                        <span class="pull-right text-muted">80% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                            <span class="sr-only">80% Complete (danger)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Tasks</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-tasks -->
-                </li>
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-alerts -->
-                </li>
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
-<ul class="dropdown-menu dropdown-user">
-    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-    </li>
-    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-    </li>
-
-    
-    <li class="divider"></li>
-		<sec:authorize access="isAuthenticated()">
-		 
-		<li><a href="/customLogout"><i class="fa fa-sign-out fa-fw"></i>
-		    Logout</a></li>
-		</sec:authorize>
-		
-		<sec:authorize access="isAnonymous()">
-		
-		<li><a href="/customLogin"><i class="fa fa-sign-out fa-fw"></i>
-		    Login</a></li>
-		</sec:authorize>
-</ul>
+                    <ul class="dropdown-menu dropdown-user">
+                        <sec:authorize access="isAuthenticated()">
+                            <li><a href="/customLogout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                        </sec:authorize>
+                        <sec:authorize access="isAnonymous()">
+                            <li><a href="/customLogin"><i class="fa fa-sign-in fa-fw"></i> Login</a></li>
+                        </sec:authorize>
+                    </ul>
                     <!-- /.dropdown-user -->
                 </li>
                 <!-- /.dropdown -->
@@ -283,104 +212,43 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                            </div>
-                            <!-- /input-group -->
+                        <li>
+                            <a href="/main"><i class="fa fa-home fa-fw"></i> 메인페이지</a>
                         </li>
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-cutlery fa-fw"></i> 음식카테고리<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="flot.html">Flot Charts</a>
+                                    <a href="/category?type=main">메인메뉴</a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">Morris.js Charts</a>
+                                    <a href="/category?type=side">반찬</a>
+                                </li>
+                                <li>
+                                    <a href="/category?type=dessert">디저트</a>
+                                </li>
+                                <li>
+                                    <a href="/category?type=drink">음료</a>
+                                </li>
+                                <li>
+                                    <a href="/category?type=etc">기타</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
+                            <a href="/board/list"><i class="fa fa-table fa-fw"></i> 게시판</a>
                         </li>
+                        <sec:authorize access="isAuthenticated()">
                         <li>
-                            <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>
+                            <a href="/mypage"><i class="fa fa-user fa-fw"></i> 마이페이지</a>
                         </li>
+                        </sec:authorize>
+                        <sec:authorize access="hasRole('ROLE_ADMIN')">
                         <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="panels-wells.html">Panels and Wells</a>
-                                </li>
-                                <li>
-                                    <a href="buttons.html">Buttons</a>
-                                </li>
-                                <li>
-                                    <a href="notifications.html">Notifications</a>
-                                </li>
-                                <li>
-                                    <a href="typography.html">Typography</a>
-                                </li>
-                                <li>
-                                    <a href="icons.html"> Icons</a>
-                                </li>
-                                <li>
-                                    <a href="grid.html">Grid</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
+                            <a href="/admin"><i class="fa fa-cogs fa-fw"></i> 관리자 페이지</a>
                         </li>
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="blank.html">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">Login Page</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
+                        </sec:authorize>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

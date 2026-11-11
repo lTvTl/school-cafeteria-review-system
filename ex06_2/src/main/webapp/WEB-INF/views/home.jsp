@@ -13,7 +13,7 @@
 
 <script>
 
-self.location ="/board/list";
+self.location ="/main";
 
 </script>
 

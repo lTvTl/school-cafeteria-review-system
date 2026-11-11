@@ -33,7 +33,32 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "home";
+		return "redirect:/main";
+	}
+	
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	public String main() {
+		return "main";
+	}
+	
+	@RequestMapping(value = "/category", method = RequestMethod.GET)
+	public String category() {
+		return "category";
+	}
+	
+	@RequestMapping(value = "/mypage", method = RequestMethod.GET)
+	public String mypage() {
+		return "mypage";
+	}
+	
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String admin() {
+		return "admin";
+	}
+	
+	@RequestMapping(value = "/customSignup", method = RequestMethod.GET)
+	public String signup() {
+		return "customSignup";
 	}
 	
 }

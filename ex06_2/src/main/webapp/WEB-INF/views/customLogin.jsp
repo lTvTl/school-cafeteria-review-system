@@ -64,6 +64,8 @@
 								</div>
 								<!-- Change this to a button or input when using this as a form -->
 								<a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>
+								<a href="/customSignup" class="btn btn-lg btn-info btn-block">Sign Up</a>
+								<a href="/main" class="btn btn-lg btn-default btn-block">Main Page</a>
 							</fieldset>
 							<input type="hidden" name="${_csrf.parameterName}"
 								value="${_csrf.token}" />
