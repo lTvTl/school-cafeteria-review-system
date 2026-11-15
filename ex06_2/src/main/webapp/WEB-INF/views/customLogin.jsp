@@ -16,16 +16,16 @@
 <title>SB Admin 2 - Bootstrap Admin Theme</title>
 
 <!-- Bootstrap Core CSS -->
-<link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="<c:url value='/resources/vendor/bootstrap/css/bootstrap.min.css'/>" rel="stylesheet">
 
 <!-- MetisMenu CSS -->
-<link href="/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+<link href="<c:url value='/resources/vendor/metisMenu/metisMenu.min.css'/>" rel="stylesheet">
 
 <!-- Custom CSS -->
-<link href="/resources/dist/css/sb-admin-2.css" rel="stylesheet">
+<link href="<c:url value='/resources/dist/css/sb-admin-2.css'/>" rel="stylesheet">
 
 <!-- Custom Fonts -->
-<link href="/resources/vendor/font-awesome/css/font-awesome.min.css"
+<link href="<c:url value='/resources/vendor/font-awesome/css/font-awesome.min.css'/>"
 	rel="stylesheet" type="text/css">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -47,7 +47,7 @@
 						<h3 class="panel-title">Please Sign In</h3>
 					</div>
 					<div class="panel-body">
-						<form role="form" method='post' action="/login">
+						<form role="form" method='post' action="<c:url value='/login'/>">
 							<fieldset>
 								<div class="form-group">
 									<input class="form-control" placeholder="userid"
@@ -63,9 +63,9 @@
 									</label>
 								</div>
 								<!-- Change this to a button or input when using this as a form -->
-								<a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>
-								<a href="/customSignup" class="btn btn-lg btn-info btn-block">Sign Up</a>
-								<a href="/main" class="btn btn-lg btn-default btn-block">Main Page</a>
+								<button type="submit" class="btn btn-lg btn-success btn-block">Login</button>
+								<a href="<c:url value='/customSignup'/>" class="btn btn-lg btn-info btn-block">Sign Up</a>
+								<a href="<c:url value='/main'/>" class="btn btn-lg btn-default btn-block">Main Page</a>
 							</fieldset>
 							<input type="hidden" name="${_csrf.parameterName}"
 								value="${_csrf.token}" />
@@ -80,16 +80,16 @@
 
 
 	<!-- jQuery -->
-	<script src="/resources/vendor/jquery/jquery.min.js"></script>
+	<script src="<c:url value='/resources/vendor/jquery/jquery.min.js'/>"></script>
 
 	<!-- Bootstrap Core JavaScript -->
-	<script src="/resources/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="<c:url value='/resources/vendor/bootstrap/js/bootstrap.min.js'/>"></script>
 
 	<!-- Metis Menu Plugin JavaScript -->
-	<script src="/resources/vendor/metisMenu/metisMenu.min.js"></script>
+	<script src="<c:url value='/resources/vendor/metisMenu/metisMenu.min.js'/>"></script>
 
 	<!-- Custom Theme JavaScript -->
-	<script src="/resources/dist/js/sb-admin-2.js"></script>
+	<script src="<c:url value='/resources/dist/js/sb-admin-2.js'/>"></script>
   <script>
   
   

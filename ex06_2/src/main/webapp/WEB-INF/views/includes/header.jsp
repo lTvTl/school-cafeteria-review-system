@@ -16,22 +16,22 @@
     <title>SB Admin 2 - Bootstrap Admin Theme</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="/resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
 
     <!-- DataTables Responsive CSS -->
-    <link href="/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/resources/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/dist/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="${pageContext.request.contextPath}/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <style>
         /* 1. 따뜻한 크림/오렌지 컬러 팔레트 적용 */
@@ -184,7 +184,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/main">
+                <a class="navbar-brand" href="${pageContext.request.contextPath}/main">
                     <span class="brand-badge"><i class="fa fa-cutlery"></i></span>학교식당 리뷰 시스템
                 </a>
             </div>
@@ -197,10 +197,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <sec:authorize access="isAuthenticated()">
-                            <li><a href="/customLogout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                            <li><a href="${pageContext.request.contextPath}/customLogout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
-                            <li><a href="/customLogin"><i class="fa fa-sign-in fa-fw"></i> Login</a></li>
+                            <li><a href="${pageContext.request.contextPath}/customLogin"><i class="fa fa-sign-in fa-fw"></i> Login</a></li>
                         </sec:authorize>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -213,40 +213,40 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="/main"><i class="fa fa-home fa-fw"></i> 메인페이지</a>
+                            <a href="${pageContext.request.contextPath}/main"><i class="fa fa-home fa-fw"></i> 메인페이지</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-cutlery fa-fw"></i> 음식카테고리<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="/category?type=main">메인메뉴</a>
+                                    <a href="${pageContext.request.contextPath}/category?type=main">메인메뉴</a>
                                 </li>
                                 <li>
-                                    <a href="/category?type=side">반찬</a>
+                                    <a href="${pageContext.request.contextPath}/category?type=side">반찬</a>
                                 </li>
                                 <li>
-                                    <a href="/category?type=dessert">디저트</a>
+                                    <a href="${pageContext.request.contextPath}/category?type=dessert">디저트</a>
                                 </li>
                                 <li>
-                                    <a href="/category?type=drink">음료</a>
+                                    <a href="${pageContext.request.contextPath}/category?type=drink">음료</a>
                                 </li>
                                 <li>
-                                    <a href="/category?type=etc">기타</a>
+                                    <a href="${pageContext.request.contextPath}/category?type=etc">기타</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="/board/list"><i class="fa fa-table fa-fw"></i> 게시판</a>
+                            <a href="${pageContext.request.contextPath}/board/list"><i class="fa fa-table fa-fw"></i> 게시판</a>
                         </li>
                         <sec:authorize access="isAuthenticated()">
                         <li>
-                            <a href="/mypage"><i class="fa fa-user fa-fw"></i> 마이페이지</a>
+                            <a href="${pageContext.request.contextPath}/mypage"><i class="fa fa-user fa-fw"></i> 마이페이지</a>
                         </li>
                         </sec:authorize>
                         <sec:authorize access="hasRole('ROLE_ADMIN')">
                         <li>
-                            <a href="/admin"><i class="fa fa-cogs fa-fw"></i> 관리자 페이지</a>
+                            <a href="${pageContext.request.contextPath}/admin"><i class="fa fa-cogs fa-fw"></i> 관리자 페이지</a>
                         </li>
                         </sec:authorize>
                     </ul>
@@ -259,4 +259,4 @@
         <div id="page-wrapper">
         
        <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-       <script src="/resources/js/jquery.min.js"></script>
+       <script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
