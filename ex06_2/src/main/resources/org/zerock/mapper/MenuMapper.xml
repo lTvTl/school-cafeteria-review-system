@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.MenuMapper">
+
+	<resultMap id="menuResultMap" type="org.zerock.domain.MenuVO">
+		<id property="menuId" column="menu_id" />
+		<result property="menuName" column="menu_name" />
+		<result property="category" column="category" />
+		<result property="avgRating" column="avg_rating" />
+		<result property="bookmarkCnt" column="bookmark_cnt" />
+		<result property="regDate" column="regdate" />
+	</resultMap>
+
+	<sql id="menuColumns">
+		menu_id, menu_name, category, avg_rating, bookmark_cnt, regdate
+	</sql>
+
+	<select id="getList" resultMap="menuResultMap">
+		select <include refid="menuColumns" />
+		from tbl_menu
+		order by menu_name asc, menu_id asc
+	</select>
+
+	<select id="getListByCategory" resultMap="menuResultMap">
+		select <include refid="menuColumns" />
+		from tbl_menu
+		where category = #{category, jdbcType=VARCHAR}
+		order by menu_name asc, menu_id asc
+	</select>
+
+	<select id="read" resultMap="menuResultMap">
+		select <include refid="menuColumns" />
+		from tbl_menu
+		where menu_id = #{menuId, jdbcType=NUMERIC}
+	</select>
+
+	<select id="getCountByCategory" resultType="int">
+		select count(*) from tbl_menu
+		where category = #{category, jdbcType=VARCHAR}
+	</select>
+</mapper>

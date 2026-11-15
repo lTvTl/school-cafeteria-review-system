@@ -23,9 +23,9 @@ public class MenuReviewServiceTests {
             (proxy, method, args) -> {
                 calls.add(method.getName());
                 switch (method.getName()) {
-                case "findTodayMenu": case "findOwnedMenu": case "lockMenu": return menuId;
-                case "insert": case "update": return affected;
-                case "delete": assertEquals("alice", args[1]); return affected;
+                case "findTodayMenu": case "findOwnedMenu": case "lockDietMenu": return menuId;
+                case "insertDietReview": case "updateDietReview": return affected;
+                case "deleteDietReview": assertEquals("alice", args[1]); return affected;
                 case "refreshRating": return 1;
                 default: throw new AssertionError(method.getName());
                 }
@@ -40,7 +40,7 @@ public class MenuReviewServiceTests {
         service.register(review, "alice");
         assertEquals("alice", review.getUserid()); assertEquals(Long.valueOf(7), review.getMenuId());
         assertEquals("맛있어요", review.getReviewText());
-        assertEquals("[findTodayMenu, lockMenu, insert, refreshRating]", calls.toString());
+        assertEquals("[findTodayMenu, lockDietMenu, insertDietReview, refreshRating]", calls.toString());
     }
     @Test public void invalidScoresNeverReachDatabase() {
         for (int score : new int[]{0, 6, -1}) {
@@ -63,7 +63,7 @@ public class MenuReviewServiceTests {
     @Test public void unconfirmedOrPastDietCannotBeReviewed() {
         menuId = null;
         assertThrows(IllegalArgumentException.class, () -> service.register(review, "alice"));
-        assertFalse(calls.contains("insert"));
+        assertFalse(calls.contains("insertDietReview"));
     }
     @Test public void midnightBetweenLookupAndInsertRejectsWrite() {
         affected = 0;
@@ -74,7 +74,7 @@ public class MenuReviewServiceTests {
         menuId = null;
         assertThrows(IllegalArgumentException.class, () -> service.modify(review, "alice"));
         assertThrows(IllegalArgumentException.class, () -> service.remove(3L, "alice"));
-        assertFalse(calls.contains("update")); assertFalse(calls.contains("delete"));
+        assertFalse(calls.contains("updateDietReview")); assertFalse(calls.contains("deleteDietReview"));
     }
     @Test public void expiredModificationDoesNotRefreshAverage() {
         affected = 0;
@@ -84,8 +84,8 @@ public class MenuReviewServiceTests {
     @Test public void modificationAndDeletionLockBeforeWriting() {
         service.modify(review, "alice");
         assertEquals("alice", review.getUserid());
-        assertEquals("[findOwnedMenu, lockMenu, update, refreshRating]", calls.toString());
+        assertEquals("[findOwnedMenu, lockDietMenu, updateDietReview, refreshRating]", calls.toString());
         calls.clear(); service.remove(3L, "alice");
-        assertEquals("[findOwnedMenu, lockMenu, delete, refreshRating]", calls.toString());
+        assertEquals("[findOwnedMenu, lockDietMenu, deleteDietReview, refreshRating]", calls.toString());
     }
 }

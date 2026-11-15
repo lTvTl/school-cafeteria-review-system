@@ -70,11 +70,6 @@ public class HomeController {
 		return "main";
 	}
 	
-	@RequestMapping(value = "/category", method = RequestMethod.GET)
-	public String category() {
-		return "category";
-	}
-	
 	@RequestMapping(value = "/mypage", method = RequestMethod.GET)
 	public String mypage() {
 		return "mypage";

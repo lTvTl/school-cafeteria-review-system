@@ -20,7 +20,7 @@ public class MenuReviewMapperTests {
         }
         Map<String, Object> params = new HashMap<>();
         params.put("cri", new Criteria(1, 10)); params.put("userid", null); params.put("dayOffset", 0);
-        assertNotNull(config.getMappedStatement(MenuReviewMapper.class.getName() + ".getList").getBoundSql(params));
+        assertNotNull(config.getMappedStatement(MenuReviewMapper.class.getName() + ".getDietReviews").getBoundSql(params));
         assertNotNull(config.getMappedStatement(MenuReviewMapper.class.getName() + ".getDietList").getBoundSql(params));
         MenuReviewVO review = new MenuReviewVO(); review.setUserid("alice");
         for (String method : new String[]{"insert", "update"}) {

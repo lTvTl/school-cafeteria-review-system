@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.zerock.mapper.MenuReviewMapper">
+    <resultMap id="reviewMap" type="org.zerock.domain.MenuReviewVO">
+        <id property="reviewId" column="review_id"/>
+        <result property="menuId" column="menu_id"/>
+        <result property="dietId" column="diet_id"/>
+        <result property="userid" column="userid"/>
+        <result property="userName" column="user_name"/>
+        <result property="starScore" column="star_score"/>
+        <result property="reviewText" column="review_text"/>
+        <result property="regDate" column="regdate"/>
+        <result property="updateDate" column="updatedate"/>
+        <result property="editable" column="editable"/>
+    </resultMap>
+    <resultMap id="summaryMap" type="org.zerock.domain.MenuReviewSummary">
+        <result property="menuId" column="menu_id"/>
+        <result property="avgRating" column="avg_rating"/>
+        <result property="reviewCount" column="review_count"/>
+        <result property="star1" column="star1"/>
+        <result property="star2" column="star2"/>
+        <result property="star3" column="star3"/>
+        <result property="star4" column="star4"/>
+        <result property="star5" column="star5"/>
+    </resultMap>
+    <sql id="reviewColumns">
+        r.review_id, r.menu_id, r.diet_id, r.userid, m.username AS user_name,
+        r.star_score, r.review_text, r.regdate, r.updatedate,
+        CASE WHEN TRUNC(r.regdate) = TRUNC(SYSDATE) THEN 1 ELSE 0 END AS editable
+    </sql>
+    <select id="lockMenu" resultType="long">
+        SELECT menu_id FROM tbl_menu WHERE menu_id = #{menuId} FOR UPDATE
+    </select>
+    <select id="getList" resultMap="reviewMap">
+        SELECT * FROM (
+            SELECT <include refid="reviewColumns"/>,
+                ROW_NUMBER() OVER (ORDER BY r.regdate DESC, r.review_id DESC) AS rn
+            FROM tbl_menu_review r JOIN tbl_member m ON m.userid = r.userid
+            WHERE r.menu_id = #{menuId} AND r.is_deleted = 0
+        ) WHERE rn BETWEEN #{start} AND #{end} ORDER BY rn
+    </select>
+    <select id="read" resultMap="reviewMap">
+        SELECT <include refid="reviewColumns"/>
+        FROM tbl_menu_review r JOIN tbl_member m ON m.userid = r.userid
+        WHERE r.review_id = #{reviewId} AND r.is_deleted = 0
+    </select>
+    <select id="countToday" resultType="int">
+        SELECT COUNT(*) FROM tbl_menu_review
+        WHERE menu_id = #{menuId} AND userid = #{userid} AND TRUNC(regdate) = TRUNC(SYSDATE)
+    </select>
+    <select id="getSummary" resultMap="summaryMap">
+        SELECT #{menuId} AS menu_id, NVL(ROUND(AVG(star_score), 2), 0) AS avg_rating,
+            COUNT(*) AS review_count,
+            COUNT(CASE WHEN star_score = 1 THEN 1 END) AS star1,
+            COUNT(CASE WHEN star_score = 2 THEN 1 END) AS star2,
+            COUNT(CASE WHEN star_score = 3 THEN 1 END) AS star3,
+            COUNT(CASE WHEN star_score = 4 THEN 1 END) AS star4,
+            COUNT(CASE WHEN star_score = 5 THEN 1 END) AS star5
+        FROM tbl_menu_review WHERE menu_id = #{menuId} AND is_deleted = 0
+    </select>
+    <insert id="insert">
+        <selectKey keyProperty="reviewId" resultType="long" order="BEFORE">
+            SELECT seq_menu_review.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO tbl_menu_review (review_id, menu_id, userid, star_score, review_text)
+        VALUES (#{reviewId}, #{menuId}, #{userid}, #{starScore}, #{reviewText})
+    </insert>
+    <update id="update">
+        UPDATE tbl_menu_review SET star_score = #{starScore}, review_text = #{reviewText}, updatedate = SYSDATE
+        WHERE review_id = #{reviewId} AND menu_id = #{menuId} AND userid = #{userid}
+          AND TRUNC(regdate) = TRUNC(SYSDATE) AND is_deleted = 0
+    </update>
+    <update id="delete">
+        UPDATE tbl_menu_review SET is_deleted = 1, review_text = '[deleted]', star_score = 1,
+            diet_id = NULL, updatedate = SYSDATE
+        WHERE review_id = #{reviewId} AND menu_id = #{menuId} AND userid = #{userid} AND is_deleted = 0
+    </update>
+    <update id="refreshAverage">
+        UPDATE tbl_menu SET avg_rating = (
+            SELECT NVL(ROUND(AVG(star_score), 2), 0) FROM tbl_menu_review WHERE menu_id = #{menuId} AND is_deleted = 0
+        ) WHERE menu_id = #{menuId}
+    </update>
+
 	<select id="getDietList" resultType="org.zerock.domain.DailyDietVO">
 		SELECT d.diet_id dietId, d.serve_date serveDate, d.meal_time mealTime,
 			d.planned_menu_id plannedMenuId, d.actual_menu_id actualMenuId, d.is_matched isMatched,
@@ -8,14 +88,14 @@
 			p.menu_name plannedMenuName, r.review_id reviewId
 		FROM tbl_daily_diet d JOIN tbl_menu p ON p.menu_id = d.planned_menu_id
 		LEFT JOIN tbl_menu a ON a.menu_id = d.actual_menu_id
-		LEFT JOIN tbl_menu_review r ON r.diet_id = d.diet_id AND r.userid = #{userid,jdbcType=VARCHAR}
+		LEFT JOIN tbl_menu_review r ON r.diet_id = d.diet_id AND r.userid = #{userid,jdbcType=VARCHAR} AND r.is_deleted = 0
 		WHERE d.serve_date = TRUNC(SYSDATE) + #{dayOffset}
 		ORDER BY CASE NVL(a.category, p.category)
 			WHEN 'MAIN' THEN 1 WHEN 'SIDE' THEN 2 WHEN 'DESSERT' THEN 3 WHEN 'DRINK' THEN 4 ELSE 5 END,
 			d.diet_id
 	</select>
-	<select id="getCount" resultType="int">SELECT COUNT(*) FROM tbl_menu_review</select>
-	<select id="getList" resultType="org.zerock.domain.MenuReviewVO">
+	<select id="getCount" resultType="int">SELECT COUNT(*) FROM tbl_menu_review WHERE diet_id IS NOT NULL AND is_deleted = 0</select>
+	<select id="getDietReviews" resultType="org.zerock.domain.MenuReviewVO">
 		SELECT * FROM (
 			SELECT r.review_id reviewId, r.menu_id menuId, r.diet_id dietId, r.userid,
 				m.username userName, r.star_score starScore, r.review_text reviewText,
@@ -27,6 +107,7 @@
 			FROM tbl_menu_review r JOIN tbl_member m ON m.userid = r.userid
 			JOIN tbl_menu n ON n.menu_id = r.menu_id
 			JOIN tbl_daily_diet d ON d.diet_id = r.diet_id
+			WHERE r.is_deleted = 0
 		) WHERE rn &gt; (#{cri.pageNum} - 1) * #{cri.amount}
 			AND rn &lt;= #{cri.pageNum} * #{cri.amount} ORDER BY rn
 	</select>
@@ -35,28 +116,29 @@
 		WHERE diet_id = #{dietId} AND serve_date = TRUNC(SYSDATE) AND actual_menu_id IS NOT NULL
 	</select>
 	<select id="findOwnedMenu" resultType="long">
-		SELECT menu_id FROM tbl_menu_review WHERE review_id = #{reviewId} AND userid = #{userid}
+		SELECT menu_id FROM tbl_menu_review WHERE review_id = #{reviewId} AND userid = #{userid} AND is_deleted = 0
 	</select>
-	<select id="lockMenu" resultType="long">
+	<select id="lockDietMenu" resultType="long">
 		SELECT menu_id FROM tbl_menu WHERE menu_id = #{menuId} FOR UPDATE
 	</select>
-	<insert id="insert">
+	<insert id="insertDietReview">
 		INSERT INTO tbl_menu_review (review_id, menu_id, diet_id, userid, star_score, review_text, regdate, updatedate)
 		SELECT seq_menu_review.NEXTVAL, actual_menu_id, diet_id, #{userid}, #{starScore}, #{reviewText}, SYSDATE, SYSDATE
 		FROM tbl_daily_diet WHERE diet_id = #{dietId} AND actual_menu_id = #{menuId}
 			AND serve_date = TRUNC(SYSDATE)
 	</insert>
-	<update id="update">
+	<update id="updateDietReview">
 		UPDATE tbl_menu_review SET star_score = #{starScore}, review_text = #{reviewText}, updatedate = SYSDATE
-		WHERE review_id = #{reviewId} AND userid = #{userid}
+		WHERE review_id = #{reviewId} AND userid = #{userid} AND is_deleted = 0
 			AND regdate &gt;= TRUNC(SYSDATE) AND regdate &lt; TRUNC(SYSDATE) + 1
 	</update>
-	<delete id="delete">
-		DELETE FROM tbl_menu_review WHERE review_id = #{reviewId} AND userid = #{userid}
-	</delete>
+	<update id="deleteDietReview">
+ UPDATE tbl_menu_review SET is_deleted = 1, review_text = '[deleted]', star_score = 1, diet_id = NULL, updatedate = SYSDATE
+ WHERE review_id = #{reviewId} AND userid = #{userid} AND is_deleted = 0
+ </update>
 	<update id="refreshRating">
 		UPDATE tbl_menu SET avg_rating = (
-			SELECT NVL(ROUND(AVG(star_score), 2), 0) FROM tbl_menu_review WHERE menu_id = #{menuId}
+			SELECT NVL(ROUND(AVG(star_score), 2), 0) FROM tbl_menu_review WHERE menu_id = #{menuId} AND is_deleted = 0
 		) WHERE menu_id = #{menuId}
 	</update>
 </mapper>

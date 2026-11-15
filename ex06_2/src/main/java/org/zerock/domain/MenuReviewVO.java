@@ -10,7 +10,7 @@ public class MenuReviewVO {
 	private Long dietId;
 	private String userid;
 	private String userName;
-	private int starScore;
+	private Integer starScore;
 	private String reviewText;
 	private Date regDate;
 	private Date updateDate;

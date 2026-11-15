@@ -54,7 +54,7 @@ public class MenuReviewSecurityTests {
         return request;
     }
     @Test public void anonymousCannotReachAnyWriteEndpoint() throws Exception {
-        for (String path : new String[]{"/menu-reviews", "/menu-reviews/1/update", "/menu-reviews/1/delete"}) {
+        for (String path : new String[]{"/menu-reviews", "/menu-reviews/1/update", "/menu-reviews/1/delete", "/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
             AtomicBoolean reached = new AtomicBoolean(); MockHttpServletResponse response = new MockHttpServletResponse();
             filter.doFilter(request(path, false, true), response, (req, res) -> reached.set(true));
             assertFalse(reached.get()); assertEquals(302, response.getStatus());
@@ -62,7 +62,7 @@ public class MenuReviewSecurityTests {
         }
     }
     @Test public void authenticatedWriteRequiresCsrf() throws Exception {
-        for (String path : new String[]{"/menu-reviews", "/menu-reviews/1/update", "/menu-reviews/1/delete"}) {
+        for (String path : new String[]{"/menu-reviews", "/menu-reviews/1/update", "/menu-reviews/1/delete", "/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
             AtomicBoolean reached = new AtomicBoolean(); MockHttpServletResponse response = new MockHttpServletResponse();
             filter.doFilter(request(path, true, false), response, (req, res) -> reached.set(true));
             assertFalse(reached.get()); assertEquals(302, response.getStatus());
