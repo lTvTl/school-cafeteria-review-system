@@ -22,8 +22,8 @@
 			value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
 		<property name="jdbcUrl"
 			value="jdbc:log4jdbc:oracle:thin:@114.70.92.70:1522:XE"></property>
-		<property name="username" value="YOUR_USERNAME"></property>
-		<property name="password" value="YOUR_PASSWORD"></property>
+		<property name="username" value="223606"></property>
+		<property name="password" value="223606"></property>
 
 	</bean>
 

@@ -1,0 +1,22 @@
+package org.zerock.domain;
+
+import java.util.Date;
+import lombok.Data;
+
+@Data
+public class MenuReviewVO {
+	private Long reviewId;
+	private Long menuId;
+	private Long dietId;
+	private String userid;
+	private String userName;
+	private int starScore;
+	private String reviewText;
+	private Date regDate;
+	private Date updateDate;
+	private boolean editable;
+	private String menuName;
+	private String category;
+	private String mealTime;
+	private Date serveDate;
+}

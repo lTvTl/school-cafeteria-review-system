@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.MenuReviewMapper">
+	<select id="getDietList" resultType="org.zerock.domain.DailyDietVO">
+		SELECT d.diet_id dietId, d.serve_date serveDate, d.meal_time mealTime,
+			d.planned_menu_id plannedMenuId, d.actual_menu_id actualMenuId, d.is_matched isMatched,
+			NVL(a.menu_name, p.menu_name) menuName, NVL(a.category, p.category) category,
+			p.menu_name plannedMenuName, r.review_id reviewId
+		FROM tbl_daily_diet d JOIN tbl_menu p ON p.menu_id = d.planned_menu_id
+		LEFT JOIN tbl_menu a ON a.menu_id = d.actual_menu_id
+		LEFT JOIN tbl_menu_review r ON r.diet_id = d.diet_id AND r.userid = #{userid,jdbcType=VARCHAR}
+		WHERE d.serve_date = TRUNC(SYSDATE) + #{dayOffset}
+		ORDER BY CASE NVL(a.category, p.category)
+			WHEN 'MAIN' THEN 1 WHEN 'SIDE' THEN 2 WHEN 'DESSERT' THEN 3 WHEN 'DRINK' THEN 4 ELSE 5 END,
+			d.diet_id
+	</select>
+	<select id="getCount" resultType="int">SELECT COUNT(*) FROM tbl_menu_review</select>
+	<select id="getList" resultType="org.zerock.domain.MenuReviewVO">
+		SELECT * FROM (
+			SELECT r.review_id reviewId, r.menu_id menuId, r.diet_id dietId, r.userid,
+				m.username userName, r.star_score starScore, r.review_text reviewText,
+				r.regdate regDate, r.updatedate updateDate, n.menu_name menuName, n.category,
+				d.meal_time mealTime, d.serve_date serveDate,
+				CASE WHEN r.userid = #{userid,jdbcType=VARCHAR} AND r.regdate &gt;= TRUNC(SYSDATE)
+					AND r.regdate &lt; TRUNC(SYSDATE) + 1 THEN 1 ELSE 0 END editable,
+				ROW_NUMBER() OVER (ORDER BY r.regdate DESC, r.review_id DESC) rn
+			FROM tbl_menu_review r JOIN tbl_member m ON m.userid = r.userid
+			JOIN tbl_menu n ON n.menu_id = r.menu_id
+			JOIN tbl_daily_diet d ON d.diet_id = r.diet_id
+		) WHERE rn &gt; (#{cri.pageNum} - 1) * #{cri.amount}
+			AND rn &lt;= #{cri.pageNum} * #{cri.amount} ORDER BY rn
+	</select>
+	<select id="findTodayMenu" resultType="long">
+		SELECT actual_menu_id FROM tbl_daily_diet
+		WHERE diet_id = #{dietId} AND serve_date = TRUNC(SYSDATE) AND actual_menu_id IS NOT NULL
+	</select>
+	<select id="findOwnedMenu" resultType="long">
+		SELECT menu_id FROM tbl_menu_review WHERE review_id = #{reviewId} AND userid = #{userid}
+	</select>
+	<select id="lockMenu" resultType="long">
+		SELECT menu_id FROM tbl_menu WHERE menu_id = #{menuId} FOR UPDATE
+	</select>
+	<insert id="insert">
+		INSERT INTO tbl_menu_review (review_id, menu_id, diet_id, userid, star_score, review_text, regdate, updatedate)
+		SELECT seq_menu_review.NEXTVAL, actual_menu_id, diet_id, #{userid}, #{starScore}, #{reviewText}, SYSDATE, SYSDATE
+		FROM tbl_daily_diet WHERE diet_id = #{dietId} AND actual_menu_id = #{menuId}
+			AND serve_date = TRUNC(SYSDATE)
+	</insert>
+	<update id="update">
+		UPDATE tbl_menu_review SET star_score = #{starScore}, review_text = #{reviewText}, updatedate = SYSDATE
+		WHERE review_id = #{reviewId} AND userid = #{userid}
+			AND regdate &gt;= TRUNC(SYSDATE) AND regdate &lt; TRUNC(SYSDATE) + 1
+	</update>
+	<delete id="delete">
+		DELETE FROM tbl_menu_review WHERE review_id = #{reviewId} AND userid = #{userid}
+	</delete>
+	<update id="refreshRating">
+		UPDATE tbl_menu SET avg_rating = (
+			SELECT NVL(ROUND(AVG(star_score), 2), 0) FROM tbl_menu_review WHERE menu_id = #{menuId}
+		) WHERE menu_id = #{menuId}
+	</update>
+</mapper>
