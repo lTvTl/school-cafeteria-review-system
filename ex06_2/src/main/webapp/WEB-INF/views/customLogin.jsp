@@ -2,116 +2,111 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<!DOCTYPE html>
-<html lang="en">
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-<head>
+<%@include file="includes/header.jsp"%>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="">
+<style>
+	.login-panel {
+		margin-top: 20px;
+		border-color: #FFE0C2;
+		box-shadow: 0 2px 8px rgba(61, 49, 42, 0.06);
+	}
+	.login-panel > .panel-heading {
+		background-color: #FFF8F0;
+		border-color: #FFE0C2;
+		color: #3D312A;
+	}
+	.login-panel .panel-title {
+		font-size: 20px;
+		font-weight: bold;
+		color: #3D312A;
+	}
+	.login-panel .btn-login {
+		background-color: #FF7A00;
+		border-color: #E65C00;
+		color: #FFFFFF;
+		font-weight: bold;
+	}
+	.login-panel .btn-login:hover,
+	.login-panel .btn-login:focus {
+		background-color: #E65C00;
+		border-color: #B34700;
+		color: #FFFFFF;
+	}
+	.login-panel .btn-signup {
+		background-color: #FFF0E0;
+		border-color: #FFE0C2;
+		color: #E65C00;
+		font-weight: bold;
+	}
+	.login-panel .btn-signup:hover,
+	.login-panel .btn-signup:focus {
+		background-color: #FFE0C2;
+		border-color: #FF7A00;
+		color: #B34700;
+	}
+</style>
 
-<title>SB Admin 2 - Bootstrap Admin Theme</title>
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">로그인</h1>
+	</div>
+</div>
 
-<!-- Bootstrap Core CSS -->
-<link href="<c:url value='/resources/vendor/bootstrap/css/bootstrap.min.css'/>" rel="stylesheet">
-
-<!-- MetisMenu CSS -->
-<link href="<c:url value='/resources/vendor/metisMenu/metisMenu.min.css'/>" rel="stylesheet">
-
-<!-- Custom CSS -->
-<link href="<c:url value='/resources/dist/css/sb-admin-2.css'/>" rel="stylesheet">
-
-<!-- Custom Fonts -->
-<link href="<c:url value='/resources/vendor/font-awesome/css/font-awesome.min.css'/>"
-	rel="stylesheet" type="text/css">
-
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4 col-md-offset-4">
-				<div class="login-panel panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">Please Sign In</h3>
-					</div>
-					<div class="panel-body">
-						<form role="form" method='post' action="<c:url value='/login'/>">
-							<fieldset>
-								<div class="form-group">
-									<input class="form-control" placeholder="userid"
-										name="username" type="text" autofocus>
-								</div>
-								<div class="form-group">
-									<input class="form-control" placeholder="Password"
-										name="password" type="password" value="">
-								</div>
-								<div class="checkbox">
-									<label> <input name="remember-me" type="checkbox">Remember
-										Me
-									</label>
-								</div>
-								<!-- Change this to a button or input when using this as a form -->
-								<button type="submit" class="btn btn-lg btn-success btn-block">Login</button>
-								<a href="<c:url value='/customSignup'/>" class="btn btn-lg btn-info btn-block">Sign Up</a>
-								<a href="<c:url value='/main'/>" class="btn btn-lg btn-default btn-block">Main Page</a>
-							</fieldset>
-							<input type="hidden" name="${_csrf.parameterName}"
-								value="${_csrf.token}" />
-						</form>
-
-					</div>
-				</div>
+<div class="row">
+	<div class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+		<div class="login-panel panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa fa-sign-in fa-fw"></i> Please Sign In</h3>
+			</div>
+			<div class="panel-body">
+				<c:if test="${not empty signupMsg}">
+					<div class="alert alert-success" role="alert"><c:out value="${signupMsg}"/></div>
+				</c:if>
+				<c:if test="${not empty error}">
+					<div class="alert alert-danger" role="alert"><c:out value="${error}"/></div>
+				</c:if>
+				<form role="form" method='post' action="<c:url value='/login'/>">
+					<fieldset>
+						<div class="form-group">
+							<input class="form-control" placeholder="userid"
+								name="username" type="text" autofocus>
+						</div>
+						<div class="form-group">
+							<input class="form-control" placeholder="Password"
+								name="password" type="password" value="">
+						</div>
+						<div class="checkbox">
+							<label>
+								<input name="remember-me" type="checkbox">Remember Me
+							</label>
+						</div>
+						<button type="submit" class="btn btn-lg btn-success btn-login btn-block">Login</button>
+						<a href="<c:url value='/customSignup'/>" class="btn btn-lg btn-info btn-signup btn-block">Sign Up</a>
+						<a href="<c:url value='/main'/>" class="btn btn-lg btn-default btn-block">Main Page</a>
+					</fieldset>
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+				</form>
 			</div>
 		</div>
 	</div>
+</div>
 
+<script>
+$(".btn-success").on("click", function(e){
+	e.preventDefault();
+	$("form").submit();
+});
+</script>
 
-
-	<!-- jQuery -->
-	<script src="<c:url value='/resources/vendor/jquery/jquery.min.js'/>"></script>
-
-	<!-- Bootstrap Core JavaScript -->
-	<script src="<c:url value='/resources/vendor/bootstrap/js/bootstrap.min.js'/>"></script>
-
-	<!-- Metis Menu Plugin JavaScript -->
-	<script src="<c:url value='/resources/vendor/metisMenu/metisMenu.min.js'/>"></script>
-
-	<!-- Custom Theme JavaScript -->
-	<script src="<c:url value='/resources/dist/js/sb-admin-2.js'/>"></script>
-  <script>
-  
-  
-  
-  
-  $(".btn-success").on("click", function(e){
-    
-    e.preventDefault();
-    $("form").submit();
-    
-  });
-  
-  </script>
-  
 <c:if test="${param.logout != null}">
-      <script>
-      $(document).ready(function(){
-      	alert("로그아웃하였습니다.");
-      });
-      </script>
-</c:if>  
+	<script>
+	$(document).ready(function(){
+		alert("로그아웃하였습니다.");
+	});
+	</script>
+</c:if>
 
-</body>
-
-</html>
+<%@include file="includes/footer.jsp"%>

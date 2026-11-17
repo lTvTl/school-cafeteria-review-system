@@ -23,9 +23,17 @@
 			<!-- /.panel-heading -->
 			<div class="panel-body">
 				<sec:authorize access="isAuthenticated()">
-					<div class="form-group">
-						<label>사용자 ID</label>
-						<input class="form-control" value='<sec:authentication property="principal.username"/>' readonly="readonly">
+					<div class="form-group" style="cursor: default; user-select: none;">
+						<label style="cursor: default;">사용자 ID</label>
+						<p class="form-control-static" style="font-size: 16px; color: #3D312A; cursor: default; user-select: none; margin-bottom: 0;">
+							<sec:authentication property="principal.username"/>
+						</p>
+					</div>
+					<div class="form-group" style="cursor: default; user-select: none;">
+						<label style="cursor: default;">사용자 이름</label>
+						<p class="form-control-static" style="font-size: 16px; color: #3D312A; cursor: default; user-select: none; margin-bottom: 0;">
+							<sec:authentication property="principal.member.userName"/>
+						</p>
 					</div>
 				</sec:authorize>
 				<div class="well">
