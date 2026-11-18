@@ -73,7 +73,7 @@ public class MenuReviewSecurityTests {
     }
 
     @Test public void adminRoutesRejectAnonymousAndRegularMembers() throws Exception {
-        for (String path : new String[]{"/admin", "/admin/", "/admin/settings"}) {
+        for (String path : new String[]{"/admin", "/admin/", "/admin/status", "/admin/settings"}) {
             for (boolean loggedIn : new boolean[]{false, true}) {
                 MockHttpServletRequest request = request(path, loggedIn, false);
                 request.setMethod("GET");
@@ -88,7 +88,7 @@ public class MenuReviewSecurityTests {
     }
 
     @Test public void adminRoutesAllowAdminAndStillRequireCsrfForWrites() throws Exception {
-        for (String path : new String[]{"/admin", "/admin/", "/admin/settings"}) {
+        for (String path : new String[]{"/admin", "/admin/", "/admin/status", "/admin/settings"}) {
             for (String method : new String[]{"GET", "POST"}) {
                 for (boolean csrf : new boolean[]{false, true}) {
                     MockHttpServletRequest request = request(path, true, csrf);
