@@ -11,11 +11,11 @@
 
 ## DB
 
-기존 `tbl_menu`와 추가 식단·북마크 테이블만 조회합니다. [SQL 안내](sql/README.md)의 순서를 따르세요. `00~08` SQL, 음식 카테고리 화면과 메뉴 조회 코드는 변경하지 않았습니다. DB에는 직접 실행하지 않았습니다.
+기존 `tbl_menu`와 추가 식단·북마크 테이블만 조회합니다. [SQL 안내](../sql/README.md)의 순서를 따르세요. `00~08` SQL, 음식 카테고리 화면과 메뉴 조회 코드는 변경하지 않았습니다. DB에는 직접 실행하지 않았습니다.
 
 ## 화면 확인
 
-테스트 DB에 [04_home_test_data.sql](sql/test-data/04_home_test_data.sql) 적용 후 최신 코드를 Clean 빌드하여 Tomcat에 배포합니다.
+테스트 DB에 [11_home_test_data.sql](../sql/menu/11_home_test_data.sql) 적용 후 최신 코드를 Clean 빌드하여 Tomcat에 배포합니다.
 
 | 확인 | 기대 결과 |
 |---|---|
