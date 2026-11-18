@@ -29,4 +29,21 @@ FROM
 WHERE mem.userid = #{userid} 
   </select>
 
+  <!-- 아이디 중복 확인 -->
+  <select id="checkId" resultType="int">
+    SELECT COUNT(*) FROM tbl_member WHERE userid = #{userid}
+  </select>
+
+  <!-- 회원 가입: 기본 정보 저장 (아이디, 암호화된 비밀번호, 이름) -->
+  <insert id="insertMember">
+    INSERT INTO tbl_member (userid, userpw, username)
+    VALUES (#{userid}, #{userpw}, #{userName})
+  </insert>
+
+  <!-- 회원 가입: 기본 권한 저장 -->
+  <insert id="insertAuth">
+    INSERT INTO tbl_member_auth (userid, auth)
+    VALUES (#{userid}, #{auth})
+  </insert>
+
 </mapper>

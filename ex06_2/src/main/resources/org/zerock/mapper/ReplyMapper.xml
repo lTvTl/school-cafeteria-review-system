@@ -7,13 +7,13 @@
 	<insert id="insert">
 
 		insert into tbl_reply (rno, bno, reply, replyer)
-		values (seq_reply.nextval, #{bno}, #{reply}, #{replyer})
+		values (seq_reply.nextval, #{bno}, #{reply}, nvl(#{replyer, jdbcType=VARCHAR}, 'user00')) <!-- TODO: [통합] 세션 유저 정보로 변경 (임시 기본값 user00 제거) -->
 
 	</insert>
 
 	<select id="read" resultType="org.zerock.domain.ReplyVO">
 
-		select * from tbl_reply where rno =
+		select rno, bno, reply, replyer, replydate, updatedate from tbl_reply where rno =
 		#{rno}
 
 	</select>
@@ -62,6 +62,14 @@
 select count(rno) from tbl_reply where bno = #{bno}
 ]]>
 	</select>
+
+	<select id="getList" resultType="org.zerock.domain.ReplyVO">
+		select rno, bno, reply, replyer, replydate, updatedate from tbl_reply where bno = #{bno} order by rno asc
+	</select>
+
+	<delete id="deleteAll">
+		delete from tbl_reply where bno = #{bno}
+	</delete>
 
 	<update id="updateReplyCnt">
 		update tbl_board set replycnt = replycnt + #{amount} where bno = #{bno}

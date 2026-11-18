@@ -33,16 +33,28 @@ import org.zerock.domain.AttachFileDTO;
 import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnailator;
 
+/**
+ * @file UploadController.java
+ * @brief 첨부파일 업로드, 조회(썸네일), 다운로드 및 삭제를 처리하는 Controller 클래스
+ */
 @Controller
 @Log4j
 public class UploadController {
 
+	/**
+	 * @brief 기본 폼 방식 업로드 테스트 화면으로 이동한다.
+	 */
 	@GetMapping("/uploadForm")
 	public void uploadForm() {
 
 		log.info("upload form");
 	}
 
+	/**
+	 * @brief 폼 방식의 다중 파일 업로드를 처리한다.
+	 * @param uploadFile 업로드된 파일 배열
+	 * @param model 뷰 데이터 모델
+	 */
 	@PostMapping("/uploadFormAction")
 	public void uploadFormPost(MultipartFile[] uploadFile, Model model) {
 
@@ -65,12 +77,19 @@ public class UploadController {
 
 	}
 
+	/**
+	 * @brief Ajax 방식 파일 업로드 화면으로 이동한다.
+	 */
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/uploadAjax")
 	public void uploadAjax() {
 		log.info("upload ajax");
 	}
 	
+	/**
+	 * @brief 오늘 날짜 기준의 폴더 경로(yyyy/MM/dd) 문자열을 생성한다.
+	 * @return 날짜별 폴더 경로 문자열
+	 */
 	private String getFolder() {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,6 +101,11 @@ public class UploadController {
 		return str.replace("-", File.separator);
 	}
 
+	/**
+	 * @brief 대상 파일이 이미지 파일인지 MIME 타입을 검사한다.
+	 * @param file 검사할 파일 객체
+	 * @return 이미지 여부 (true: 이미지, false: 일반 파일)
+	 */
 	private boolean checkImageType(File file) {
 
 		try {
@@ -97,6 +121,11 @@ public class UploadController {
 		return false;
 	}
 	
+	/**
+	 * @brief Ajax를 통한 다중 파일 업로드 및 이미지 썸네일 생성을 처리한다.
+	 * @param uploadFile 업로드된 파일 배열
+	 * @return 업로드된 파일 정보(AttachFileDTO) 목록 ResponseEntity
+	 */
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
@@ -159,6 +188,11 @@ public class UploadController {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
+	/**
+	 * @brief 업로드된 이미지(썸네일 또는 원본)의 바이트 데이터를 반환한다.
+	 * @param fileName 경로가 포함된 파일명
+	 * @return 이미지 바이트 배열 ResponseEntity
+	 */
 	@GetMapping("/display")
 	@ResponseBody
 	public ResponseEntity<byte[]> getFile(String fileName) {
@@ -183,6 +217,12 @@ public class UploadController {
 		return result;
 	}
 
+	/**
+	 * @brief 첨부파일을 원본 파일명으로 다운로드한다.
+	 * @param userAgent 브라우저 판별을 위한 User-Agent 헤더
+	 * @param fileName 다운로드할 파일 경로 및 이름
+	 * @return 파일 리소스 ResponseEntity
+	 */
 	@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
 	public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) {
@@ -221,6 +261,12 @@ public class UploadController {
 	}
 	
 
+	/**
+	 * @brief 서버에 업로드된 파일(이미지의 경우 원본 및 썸네일 포함)을 삭제한다.
+	 * @param fileName 삭제할 대상 파일명
+	 * @param type 파일 타입 (image 또는 file)
+	 * @return 삭제 결과 문자열 ResponseEntity
+	 */
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/deleteFile")
 	@ResponseBody

@@ -33,7 +33,7 @@
 
 	<insert id="insert">
 		insert into tbl_board (bno,title,content,writer)
-		values (seq_board.nextval, #{title}, #{content}, #{writer})
+		values (seq_board.nextval, #{title}, #{content}, nvl(#{writer, jdbcType=VARCHAR}, 'user00')) <!-- TODO: [통합] 세션 유저 정보로 변경 (임시 기본값 user00 제거) -->
 	</insert>
 
 	<insert id="insertSelectKey">
@@ -45,11 +45,11 @@
 
 		insert into tbl_board (bno,title,content, writer)
 		values (#{bno},
-		#{title}, #{content}, #{writer})
+		#{title}, #{content}, nvl(#{writer, jdbcType=VARCHAR}, 'user00')) <!-- TODO: [통합] 세션 유저 정보로 변경 (임시 기본값 user00 제거) -->
 	</insert>
 
 	<select id="read" resultType="org.zerock.domain.BoardVO">
-		select * from tbl_board where bno =
+		select bno, title, content, writer, regdate, updatedate, replycnt from tbl_board where bno =
 		#{bno}
 	</select>
 
@@ -62,7 +62,7 @@
 		update tbl_board
 		set title= #{title},
 		content=#{content},
-		writer = #{writer},
+		writer = nvl(#{writer, jdbcType=VARCHAR}, 'user00'), <!-- TODO: [통합] 세션 유저 정보로 변경 (작성자 본인 검증 필요) -->
 		updateDate = sysdate
 		where bno = #{bno}
 	</update>
