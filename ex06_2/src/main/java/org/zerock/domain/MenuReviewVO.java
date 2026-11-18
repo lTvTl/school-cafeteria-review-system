@@ -15,8 +15,4 @@ public class MenuReviewVO {
 	private Date regDate;
 	private Date updateDate;
 	private boolean editable;
-	private String menuName;
-	private String category;
-	private String mealTime;
-	private Date serveDate;
 }

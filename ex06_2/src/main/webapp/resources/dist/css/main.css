@@ -1,44 +1,43 @@
 .cafeteria-main { max-width: 1200px; margin: 0 auto; padding-bottom: 40px; }
 .cafeteria-main .page-header { margin-bottom: 12px; }
 .cafeteria-main .intro { color: #6c5a4e; margin-bottom: 28px; }
-.cafeteria-main .menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.cafeteria-main .meal-card, .cafeteria-main .review-card { border: 1px solid #f0d8c2; border-radius: 16px; overflow: hidden; margin-bottom: 24px; background: #fff; }
+.cafeteria-main .menu-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+.cafeteria-main .meal-card { align-self: start; border: 1px solid #f0d8c2; border-radius: 16px; overflow: hidden; margin-bottom: 24px; background: #fff; }
 .cafeteria-main .card-heading { padding: 22px 24px; background: #fff8f0; border-bottom: 1px solid #f0d8c2; }
 .cafeteria-main h2 { margin: 0 0 8px; font-size: 23px; font-weight: bold; }
-.cafeteria-main .card-heading p { margin: 0; color: #6c5a4e; }
+.cafeteria-main .menu-subtitle { display: block; margin-top: 8px; font-size: 16px; font-weight: normal; color: #6c5a4e; }
+.cafeteria-main .meal-card > summary.card-heading { position: relative; padding-right: 56px; cursor: pointer; list-style: none; }
+.cafeteria-main .meal-card > summary::-webkit-details-marker { display: none; }
+.cafeteria-main .meal-card > summary:focus-visible { outline: 2px solid #a34400; outline-offset: -4px; }
+.cafeteria-main .meal-card:not([open]) > summary { border-bottom: 0; }
+.cafeteria-main .menu-toggle-icon { position: absolute; right: 24px; top: 26px; font-size: 16px; }
+.cafeteria-main .meal-card[open] .menu-toggle-icon { transform: rotate(180deg); }
 .cafeteria-main .card-body { padding: 24px; }
 .cafeteria-main .empty-menu { padding: 28px 0; text-align: center; color: #6c5a4e; }
 .cafeteria-main .empty-menu i { display: block; margin-bottom: 14px; font-size: 28px; color: #a34a0a; }
-.cafeteria-main .rating-options { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 24px; }
-.cafeteria-main .rating-options label { cursor: pointer; padding: 10px 14px; border: 1px solid #d8bca4; border-radius: 8px; font-weight: normal; }
-.cafeteria-main .rating-options input { margin-right: 6px; }
-.cafeteria-main .rating-options label:has(input:checked) { background: #fff0df; border-color: #a34400; color: #8a3900; }
-.cafeteria-main .rating-options label:focus-within { outline: 2px solid #a34400; outline-offset: 3px; }
-.cafeteria-main legend { font-size: 17px; border: 0; margin-bottom: 0; font-weight: bold; }
-.cafeteria-main textarea.form-control { height: auto; resize: vertical; }
-.cafeteria-main .review-actions { margin-top: 18px; }
-.cafeteria-main .review-note { color: #6c5a4e; margin-top: 10px; }
-.cafeteria-main .btn-review { background: #a34400; border-color: #a34400; color: #fff; }
 .cafeteria-main .diet-list { list-style: none; padding: 0; margin: 0; }
 .cafeteria-main .diet-list li { padding: 14px 0; border-bottom: 1px solid #f4e4d7; overflow-wrap: anywhere; }
 .cafeteria-main .category-badge { display: inline-block; padding: 3px 10px; margin-right: 8px; border-radius: 15px; background: #fff0df; color: #843900; font-size: 14px; }
 .cafeteria-main .category-heading { color: #843900; background: #fff8f0; padding: 10px 14px; border-radius: 8px; margin-top: 20px; }
-.cafeteria-main .diet-list .category-heading { padding: 10px 14px; border: 0; }
-.cafeteria-main .category-heading h3 { margin: 0; font-size: 18px; }
+.cafeteria-main .diet-list .category-heading { padding: 4px 0; margin-top: 16px; border: 0; background: transparent; }
+.cafeteria-main .diet-list .category-heading:first-child { margin-top: 0; }
+.cafeteria-main .category-heading h3 { margin: 0; font-size: 14px; font-weight: 600; }
 .cafeteria-main .menu-status { display: block; margin-top: 6px; font-size: 14px; color: #6c5a4e; }
-.cafeteria-main .menu-review-form { padding: 20px 0; border-bottom: 1px solid #f0d8c2; }
-.cafeteria-main h3 { font-size: 20px; }
-.cafeteria-main form .btn { margin-top: 12px; }
-.cafeteria-main .review-list-title { margin-top: 32px; }
-.cafeteria-main .review-item { padding: 22px 0; border-bottom: 1px solid #f0d8c2; }
-.cafeteria-main .review-item h4 { font-size: 18px; line-height: 1.6; overflow-wrap: anywhere; }
-.cafeteria-main .review-text { white-space: pre-wrap; overflow-wrap: anywhere; }
-.cafeteria-main .review-stars { color: #994000; }
-.cafeteria-main summary { cursor: pointer; color: #994000; padding: 8px 0; }
-.cafeteria-main .review-edit form { padding: 16px; background: #fff8f0; border-radius: 8px; }
-.cafeteria-main select.form-control { max-width: 200px; margin-bottom: 12px; }
-.cafeteria-main .review-pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 24px; }
+.cafeteria-main .bookmark-heart { margin-left: 6px; color: #b52b45; font-size: 15px; white-space: nowrap; }
 @media (max-width: 991px) {
     .cafeteria-main .menu-grid { grid-template-columns: 1fr; gap: 0; }
     .cafeteria-main .card-heading, .cafeteria-main .card-body { padding: 20px; }
 }
+.cafeteria-main .review-compose { border: 1px solid #f0d8c2; border-radius: 16px; overflow: hidden; background: #fff; }
+.cafeteria-main .review-compose-note { margin: 8px 0 0; color: #6c5a4e; font-size: 14px; }
+.cafeteria-main .review-score { margin-bottom: 24px; }
+.cafeteria-main .review-score legend { margin-bottom: 10px; border: 0; font-size: 16px; font-weight: bold; }
+.cafeteria-main .review-score-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.cafeteria-main .review-score-option { position: relative; margin: 0; cursor: pointer; }
+.cafeteria-main .review-score-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.cafeteria-main .review-score-option span { display: block; padding: 10px 16px; border: 1px solid #d8bca4; border-radius: 8px; color: #843900; }
+.cafeteria-main .review-score-option input:checked + span { background: #fff0df; border-color: #a34400; }
+.cafeteria-main .review-score-option input:focus-visible + span { outline: 2px solid #a34400; outline-offset: 2px; }
+.cafeteria-main .review-compose textarea { height: auto; min-height: 120px; resize: vertical; }
+.cafeteria-main .review-compose-actions { margin-top: 18px; text-align: right; }
+.cafeteria-main .review-compose-actions .btn { background: #a34400; border-color: #a34400; }

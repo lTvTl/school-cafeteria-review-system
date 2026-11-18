@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.DailyDietMapper">
+	<select id="getDietList" resultType="org.zerock.domain.DailyDietVO">
+		SELECT d.diet_id dietId, d.serve_date serveDate, d.meal_time mealTime,
+			d.planned_menu_id plannedMenuId, d.actual_menu_id actualMenuId, d.is_matched isMatched,
+			NVL(a.menu_name, p.menu_name) menuName, NVL(a.category, p.category) category,
+			p.menu_name plannedMenuName,
+			CASE WHEN EXISTS (
+				SELECT 1 FROM tbl_bookmark b
+				WHERE b.userid = #{userid,jdbcType=VARCHAR}
+				AND b.menu_id = NVL(d.actual_menu_id, d.planned_menu_id)
+			) THEN 1 ELSE 0 END bookmarked
+		FROM tbl_daily_diet d JOIN tbl_menu p ON p.menu_id = d.planned_menu_id
+		LEFT JOIN tbl_menu a ON a.menu_id = d.actual_menu_id
+		WHERE d.serve_date = TRUNC(SYSDATE) + #{dayOffset}
+		ORDER BY CASE NVL(a.category, p.category)
+			WHEN 'MAIN' THEN 1 WHEN 'SIDE' THEN 2 WHEN 'DESSERT' THEN 3 WHEN 'DRINK' THEN 4 ELSE 5 END,
+			d.diet_id
+	</select>
+</mapper>

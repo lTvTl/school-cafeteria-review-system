@@ -20,12 +20,6 @@ public class MenuControllerTest {
     @Before public void setUp() {
         failure=null; mutations=0;
         MenuReviewService service=new MenuReviewService() {
-            public java.util.List<DailyDietVO> getDietList(int offset, String userid) { throw new AssertionError(); }
-            public java.util.List<MenuReviewVO> getList(Criteria cri, String userid) { throw new AssertionError(); }
-            public int getCount() { throw new AssertionError(); }
-            public void register(MenuReviewVO review, String userid) { throw new AssertionError(); }
-            public void modify(MenuReviewVO review, String userid) { throw new AssertionError(); }
-            public void remove(Long reviewId, String userid) { throw new AssertionError(); }
             public MenuReviewPage getPage(Long id,int page) {
                 if(id<=0 || id==99) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
                 MenuVO menu=new MenuVO();menu.setMenuId(id);menu.setCategory("MAIN");menu.setMenuName("돈까스");
@@ -36,7 +30,7 @@ public class MenuControllerTest {
             public void modify(Long id,Long rid,Integer score,String text) {register(id,score,text);}
             public void remove(Long id,Long rid) {register(id,1,"");}
         };
-        mvc=MockMvcBuilders.standaloneSetup(new HomeController(),new MenuController(service),new MenuPopupReviewController(service),new MenuReviewController(service))
+        mvc=MockMvcBuilders.standaloneSetup(new HomeController(),new MenuController(service),new MenuPopupReviewController(service))
             .setViewResolvers(new InternalResourceViewResolver("/WEB-INF/views/",".jsp")).build();
     }
     @Test public void anonymousDetailIsIndependentPopupView() throws Exception {

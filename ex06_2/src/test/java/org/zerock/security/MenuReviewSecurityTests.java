@@ -54,7 +54,7 @@ public class MenuReviewSecurityTests {
         return request;
     }
     @Test public void anonymousCannotReachAnyWriteEndpoint() throws Exception {
-        for (String path : new String[]{"/menu-reviews", "/menu-reviews/1/update", "/menu-reviews/1/delete", "/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
+        for (String path : new String[]{"/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
             AtomicBoolean reached = new AtomicBoolean(); MockHttpServletResponse response = new MockHttpServletResponse();
             filter.doFilter(request(path, false, true), response, (req, res) -> reached.set(true));
             assertFalse(reached.get()); assertEquals(302, response.getStatus());
@@ -62,13 +62,44 @@ public class MenuReviewSecurityTests {
         }
     }
     @Test public void authenticatedWriteRequiresCsrf() throws Exception {
-        for (String path : new String[]{"/menu-reviews", "/menu-reviews/1/update", "/menu-reviews/1/delete", "/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
+        for (String path : new String[]{"/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
             AtomicBoolean reached = new AtomicBoolean(); MockHttpServletResponse response = new MockHttpServletResponse();
             filter.doFilter(request(path, true, false), response, (req, res) -> reached.set(true));
             assertFalse(reached.get()); assertEquals(302, response.getStatus());
             assertEquals("/accessError", response.getRedirectedUrl());
             filter.doFilter(request(path, true, true), new MockHttpServletResponse(), (req, res) -> reached.set(true));
             assertTrue(reached.get());
+        }
+    }
+
+    @Test public void adminRoutesRejectAnonymousAndRegularMembers() throws Exception {
+        for (String path : new String[]{"/admin", "/admin/", "/admin/settings"}) {
+            for (boolean loggedIn : new boolean[]{false, true}) {
+                MockHttpServletRequest request = request(path, loggedIn, false);
+                request.setMethod("GET");
+                AtomicBoolean reached = new AtomicBoolean();
+                MockHttpServletResponse response = new MockHttpServletResponse();
+                filter.doFilter(request, response, (req, res) -> reached.set(true));
+                assertFalse("Unexpected access: " + path, reached.get());
+                assertEquals(302, response.getStatus());
+                assertTrue(response.getRedirectedUrl().endsWith(loggedIn ? "/accessError" : "/customLogin"));
+            }
+        }
+    }
+
+    @Test public void adminRoutesAllowAdminAndStillRequireCsrfForWrites() throws Exception {
+        for (String path : new String[]{"/admin", "/admin/", "/admin/settings"}) {
+            for (String method : new String[]{"GET", "POST"}) {
+                for (boolean csrf : new boolean[]{false, true}) {
+                    MockHttpServletRequest request = request(path, true, csrf);
+                    request.setMethod(method);
+                    request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                        new SecurityContextImpl(new UsernamePasswordAuthenticationToken("admin0", "unused", AuthorityUtils.createAuthorityList("ROLE_ADMIN"))));
+                    AtomicBoolean reached = new AtomicBoolean();
+                    filter.doFilter(request, new MockHttpServletResponse(), (req, res) -> reached.set(true));
+                    assertEquals(method.equals("GET") || csrf, reached.get());
+                }
+            }
         }
     }
 }

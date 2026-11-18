@@ -19,10 +19,10 @@
 
 신규 SQL:
 
-- `sql/menu/00_inspect_menu.sql`: 기존 객체·컬럼·기본값·제약조건·인덱스·시퀀스 확인. 읽기 전용.
-- `sql/menu/01_create_menu.sql`: 신규 테이블, PK/검사 제약, 시퀀스, 카테고리 인덱스 생성.
-- `sql/menu/02_seed_menu_optional.sql`: 선택 실행하는 11개 예시 음식. 같은 카테고리/이름은 다시 넣지 않음.
-- `sql/menu/03_verify_menu.sql`: 카테고리별 개수, 목록, 유효하지 않은 행 수 확인. 읽기 전용.
+- `sql/verify/01_inspect_menu.sql`: 기존 객체·컬럼·기본값·제약조건·인덱스·시퀀스 확인. 읽기 전용.
+- `sql/install/02_create_menu.sql`: 신규 테이블, PK/검사 제약, 시퀀스, 카테고리 인덱스 생성.
+- `sql/test-data/01_seed_menu_optional.sql`: 선택 실행하는 11개 예시 음식. 같은 카테고리/이름은 다시 넣지 않음.
+- `sql/verify/02_verify_menu.sql`: 카테고리별 개수, 목록, 유효하지 않은 행 수 확인. 읽기 전용.
 
 신규 테스트와 문서:
 
@@ -54,12 +54,12 @@ DB 접속 파일, 보안 설정, 게시판·회원·관리자 구현은 수정�
 
 프로그램이 사용하는 Oracle 스키마로 SQL Developer에 접속하고 UTF-8로 파일을 열어 Run Script(F5)로 실행합니다. SYS/SYSTEM에 설치하지 않습니다. 접속정보는 기존 로컬 설정을 사용하고 소스에 추가하지 않습니다.
 
-1. `00_inspect_menu.sql` 실행.
-2. 메뉴 관련 객체가 없는 신규 설치라면 `01_create_menu.sql` 실행.
-3. 테스트 데이터가 필요하면 `02_seed_menu_optional.sql` 실행. 실서비스에 예시 데이터를 넣을 필요는 없습니다.
-4. `03_verify_menu.sql` 실행. 신규 설치에 예시 데이터를 넣었다면 MAIN 3, SIDE 3, DESSERT 2, DRINK 2, ETC 1개입니다.
+1. `01_inspect_menu.sql` 실행.
+2. 메뉴 관련 객체가 없는 신규 설치라면 `02_create_menu.sql` 실행.
+3. 테스트 데이터가 필요하면 `01_seed_menu_optional.sql` 실행. 실서비스에 예시 데이터를 넣을 필요는 없습니다.
+4. `02_verify_menu.sql` 실행. 신규 설치에 예시 데이터를 넣었다면 MAIN 3, SIDE 3, DESSERT 2, DRINK 2, ETC 1개입니다.
 
-SQL*Plus에서도 `@sql/menu/00_inspect_menu.sql`과 같은 방법으로 실행할 수 있습니다. 한글 seed 파일을 실행할 때 클라이언트 문자셋을 UTF-8에 맞추십시오.
+SQL*Plus에서도 `@sql/verify/01_inspect_menu.sql`과 같은 방법으로 실행할 수 있습니다. 한글 seed 파일을 실행할 때 클라이언트 문자셋을 UTF-8에 맞추십시오.
 
 `01`은 동일 객체가 있으면 DDL 전에 오류로 중단합니다. 기존 테이블이나 시퀀스를 삭제·초기화하거나 구조가 같다고 추정하여 재사용하지 않습니다. 기존 객체가 있으면 `00`의 결과로 컬럼 타입·NOT NULL·기본값·PK·허용 범위·인덱스를 비교하고, 기존 menu_id와 시퀀스 발급 범위를 확인한 뒤 별도 마이그레이션을 준비하십시오. 호환되는 객체가 이미 있다면 `01`을 다시 실행할 필요가 없습니다. Oracle DDL은 암묵적으로 커밋되므로 중간 실패 시 먼저 객체 상태를 다시 확인해야 합니다.
 

@@ -37,7 +37,7 @@ public class CategoryControllerTest {
 		MenuServiceImpl service = new MenuServiceImpl();
 		service.setMapper(mapper);
 		// Register both controllers: duplicate /category mappings fail setup.
-		mvc = MockMvcBuilders.standaloneSetup(homeWithReviewService(), new CategoryController(service))
+		mvc = MockMvcBuilders.standaloneSetup(homeWithDietService(), new CategoryController(service), new AdminController())
 				.setViewResolvers(new InternalResourceViewResolver("/WEB-INF/views/", ".jsp"))
 				.build();
 	}
@@ -102,12 +102,12 @@ public class CategoryControllerTest {
 		}
 	}
 
-    private HomeController homeWithReviewService() {
+    private HomeController homeWithDietService() {
         HomeController home = new HomeController();
-        org.zerock.service.MenuReviewService reviews = (org.zerock.service.MenuReviewService) java.lang.reflect.Proxy.newProxyInstance(
-            getClass().getClassLoader(), new Class<?>[]{org.zerock.service.MenuReviewService.class},
-            (proxy, method, args) -> method.getName().equals("getCount") ? 0 : java.util.Collections.emptyList());
-        org.springframework.test.util.ReflectionTestUtils.setField(home, "menuReviewService", reviews);
+        org.zerock.service.DailyDietService reviews = (org.zerock.service.DailyDietService) java.lang.reflect.Proxy.newProxyInstance(
+            getClass().getClassLoader(), new Class<?>[]{org.zerock.service.DailyDietService.class},
+            (proxy, method, args) -> java.util.Collections.emptyList());
+        org.springframework.test.util.ReflectionTestUtils.setField(home, "dailyDietService", reviews);
         return home;
     }
 }

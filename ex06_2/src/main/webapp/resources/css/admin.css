@@ -1,0 +1,18 @@
+.admin-page { max-width: 1000px; margin: 0 auto; padding-bottom: 40px; }
+.admin-page .page-header { color: #263d56; }
+.admin-intro { margin-bottom: 24px; color: #5d6570; }
+.admin-panel { border: 1px solid #d3dce6; border-radius: 16px; overflow: hidden; background: #fff; }
+.admin-panel-heading { padding: 24px; background: #edf2f7; border-bottom: 1px solid #d3dce6; }
+.admin-panel-heading h2 { margin: 12px 0 0; font-size: 22px; font-weight: bold; color: #263d56; }
+.admin-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; background: #263d56; color: #fff; font-size: 13px; }
+.admin-panel-body { padding: 24px; }
+.admin-account { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; margin-bottom: 24px; }
+.admin-account dt { color: #5d6570; }
+.admin-account dd { margin: 0; overflow-wrap: anywhere; }
+.admin-role { display: inline-block; margin-left: 8px; color: #5d6570; font-size: 13px; }
+.admin-panel-body .btn { margin-top: 12px; }
+@media (max-width: 480px) {
+    .admin-panel-heading, .admin-panel-body { padding: 20px; }
+    .admin-account { grid-template-columns: 1fr; gap: 8px; }
+    .admin-account dd { margin-bottom: 12px; }
+}

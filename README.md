@@ -1,6 +1,15 @@
 # school-cafeteria-review-system
 팀프로젝트 - 학교식당 리뷰 시스템
 
+## 사용 안내
+
+- [관리자 기본 화면과 권한 설정](docs/admin.md)
+
+- [메인페이지 구현 및 확인](docs/home.md)
+- [DB 설치 및 실행할 SQL](docs/sql/README.md)
+- [음식 카테고리 안내](docs/food-category.md)
+- [변수명 정의서](docs/변수명_정의서.md)
+
 ---
 
 ## 개발 환경

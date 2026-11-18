@@ -14,5 +14,5 @@ public class DailyDietVO {
 	private String menuName;
 	private String category;
 	private String plannedMenuName;
-	private Long reviewId;
+	private boolean bookmarked;
 }

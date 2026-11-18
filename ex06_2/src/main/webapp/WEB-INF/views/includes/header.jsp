@@ -126,6 +126,27 @@
             margin: 4px 12px;
             font-size: 16px;
         }
+        .sidebar ul li.admin-menu {
+            margin-top: 24px;
+            padding-top: 12px;
+            border-top: 1px solid #d3dce6;
+            border-bottom: 0;
+        }
+        .sidebar ul li.admin-menu > a.admin-link {
+            background-color: #263d56;
+            color: #ffffff;
+            border-radius: 12px;
+        }
+        .sidebar ul li.admin-menu > a.admin-link:hover,
+        .sidebar ul li.admin-menu > a.admin-link:focus,
+        .sidebar ul li.admin-menu > a.admin-link.active {
+            background-color: #172b40;
+            color: #ffffff;
+        }
+        .sidebar ul li.admin-menu > a.admin-link:focus-visible {
+            outline: 2px solid #263d56;
+            outline-offset: 3px;
+        }
 
         /* 본문 기본 크기 및 구분선 색상 */
         .page-header {
@@ -245,8 +266,8 @@
                         </li>
                         </sec:authorize>
                         <sec:authorize access="hasRole('ROLE_ADMIN')">
-                        <li>
-                            <a href="${pageContext.request.contextPath}/admin"><i class="fa fa-cogs fa-fw"></i> 관리자 페이지</a>
+                        <li class="admin-menu">
+                            <a class="admin-link" href="${pageContext.request.contextPath}/admin"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> 관리자 페이지</a>
                         </li>
                         </sec:authorize>
                     </ul>
