@@ -21,9 +21,9 @@
 		<property name="driverClassName"
 			value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
 		<property name="jdbcUrl"
-			value="jdbc:log4jdbc:oracle:thin:@114.70.92.70:1522:XE"></property>
-		<property name="username" value="223606"></property>
-		<property name="password" value="223606"></property>
+			value="jdbc:log4jdbc:oracle:thin:@your_IP_addrass:XE"></property>
+		<property name="username" value="YOUR_USERNAME"></property>
+		<property name="password" value="YOUR_PASSWORD"></property>
 
 	</bean>
 
@@ -41,6 +41,25 @@
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- 학교 웹메일 인증번호 발송용 Gmail SMTP 설정 -->
+	<!-- [사용자 입력 필요] username에 본인 Gmail 주소, password에 Google 16자리 '앱 비밀번호'를 입력하세요. -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="YOUR_GMAIL@gmail.com" />
+		<property name="password" value="YOUR_16_DIGIT_APP_PASSWORD" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+			</props>
+		</property>
 	</bean>
 
 	<tx:annotation-driven />

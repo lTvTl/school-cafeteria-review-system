@@ -15,10 +15,10 @@ public interface MemberService {
 	// 회원 가입 처리 (비밀번호 암호화 후 회원 테이블 + 권한 테이블 저장)
 	public void register(MemberVO member);
 
-	// [추후 확장용] 학교 웹메일로 인증번호 발송
-	// public String sendSchoolEmailCode(String schoolEmail);
+	// 학교 웹메일로 인증번호 발송
+	public String sendSchoolEmailCode(String schoolEmail);
 
-	// [추후 확장용] 사용자가 입력한 인증번호 검증
-	// public boolean verifySchoolEmailCode(String inputCode, String savedCode);
+	// 사용자가 입력한 인증번호 검증
+	public boolean verifySchoolEmailCode(String inputCode, String savedCode);
 
 }

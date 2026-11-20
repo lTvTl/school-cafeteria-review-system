@@ -50,12 +50,11 @@
 						<h3 class="panel-title">Logout Page</h3>
 					</div>
 					<div class="panel-body">
-						<form role="form" method='post' action="/customLogout">
+						<form id="logoutForm" role="form" method="post" action="${pageContext.request.contextPath}/customLogout">
 							<fieldset>
-								
 								<!-- Change this to a button or input when using this as a form -->
 								<a href="index.html" class="btn btn-lg btn-success btn-block">Logout</a>
-								<a href="/main" class="btn btn-lg btn-default btn-block">Cancel</a>
+								<a href="${pageContext.request.contextPath}/main" class="btn btn-lg btn-default btn-block">Cancel</a>
 							</fieldset>
 							<input type="hidden" name="${_csrf.parameterName}"
 								value="${_csrf.token}" />
@@ -79,14 +78,7 @@
 	<script src="/resources/dist/js/sb-admin-2.js"></script>
 	
 	<script>
-	
-	$(".btn-success").on("click", function(e){
-		
-		e.preventDefault();
-		$("form").submit();
-		
-	});
-	
+	document.getElementById("logoutForm").submit();
 	</script>
 
 </body>

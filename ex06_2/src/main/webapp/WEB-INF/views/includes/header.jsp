@@ -218,7 +218,12 @@
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <sec:authorize access="isAuthenticated()">
-                            <li><a href="${pageContext.request.contextPath}/customLogout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                            <li>
+                                <form id="headerLogoutForm" action="${pageContext.request.contextPath}/customLogout" method="post" style="display:none;">
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                </form>
+                                <a href="${pageContext.request.contextPath}/customLogout" onclick="document.getElementById('headerLogoutForm').submit(); return false;"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
                             <li><a href="${pageContext.request.contextPath}/customLogin"><i class="fa fa-sign-in fa-fw"></i> Login</a></li>

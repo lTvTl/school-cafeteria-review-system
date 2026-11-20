@@ -95,16 +95,12 @@
 								id="userName" name="userName" type="text" value="" required>
 						</div>
 
-						<%--
-						===================================================================
-						[추후 확장 영역] 학교 웹메일 재학생 인증 UI
-						나중에 웹메일 인증 기능을 붙일 때 아래 주석을 해제하여 사용할 수 있습니다.
-						===================================================================
+						<!-- 4. 학교 웹메일 재학생 인증 -->
 						<div class="form-group">
-							<label for="schoolEmail">학교 웹메일 인증</label>
+							<label for="schoolEmail">학교 웹메일 인증 (.ac.kr / .edu)</label>
 							<div class="input-group">
-								<input class="form-control" placeholder="학교 이메일 입력"
-									id="schoolEmail" name="schoolEmail" type="email">
+								<input class="form-control" placeholder="예: student@school.ac.kr"
+									id="schoolEmail" name="schoolEmail" type="email" required>
 								<span class="input-group-btn">
 									<button type="button" id="btnSendMail" class="btn btn-default btn-check">인증번호 발송</button>
 								</span>
@@ -113,13 +109,13 @@
 						<div class="form-group">
 							<div class="input-group">
 								<input class="form-control" placeholder="인증번호 6자리 입력"
-									id="authCode" name="authCode" type="text">
+									id="authCode" name="authCode" type="text" required>
 								<span class="input-group-btn">
 									<button type="button" id="btnVerifyMail" class="btn btn-default btn-check">인증확인</button>
 								</span>
 							</div>
+							<small id="mailCheckMsg" class="help-block" style="margin-bottom: 0;"></small>
 						</div>
-						--%>
 
 						<button type="submit" class="btn btn-lg btn-register btn-block">Register</button>
 						<a href="<c:url value='/customLogin'/>" class="btn btn-lg btn-default btn-block">Back to Login</a>
@@ -134,6 +130,9 @@
 
 <script>
 $(document).ready(function() {
+	var csrfHeaderName = "${_csrf.headerName}";
+	var csrfTokenValue = "${_csrf.token}";
+
 	// 아이디 중복 확인 버튼 이벤트
 	$("#btnCheckId").on("click", function() {
 		var userid = $.trim($("#userid").val());
@@ -156,6 +155,77 @@ $(document).ready(function() {
 					msgBox.text("이미 사용 중인 아이디입니다.").css("color", "#D9534F");
 				} else {
 					msgBox.text("아이디를 확인해주세요.").css("color", "#D9534F");
+				}
+			}
+		});
+	});
+
+	// 학교 웹메일 인증번호 발송 버튼 이벤트
+	$("#btnSendMail").on("click", function() {
+		var schoolEmail = $.trim($("#schoolEmail").val());
+		var msgBox = $("#mailCheckMsg");
+
+		if (!schoolEmail) {
+			msgBox.text("학교 이메일을 입력해주세요.").css("color", "#D9534F");
+			$("#schoolEmail").focus();
+			return;
+		}
+
+		msgBox.text("인증번호 메일을 발송 중입니다... 잠시만 기다려주세요.").css("color", "#E65C00");
+
+		$.ajax({
+			url: "<c:url value='/member/sendMail'/>",
+			type: "POST",
+			beforeSend: function(xhr) {
+				if (csrfHeaderName && csrfTokenValue) {
+					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+				}
+			},
+			data: { schoolEmail: schoolEmail },
+			success: function(result) {
+				if (result === "sent") {
+					msgBox.text("입력하신 학교 이메일로 인증번호가 발송되었습니다. 메일함을 확인해주세요.").css("color", "#2E7D32");
+					$("#authCode").focus();
+				} else if (result === "invalid_domain") {
+					msgBox.text("대학교 웹메일(.ac.kr 또는 .edu)만 사용할 수 있습니다.").css("color", "#D9534F");
+				} else if (result === "mail_error") {
+					msgBox.text("메일 발송에 실패했습니다. root-context.xml의 Gmail 계정 및 앱 비밀번호 설정을 확인해주세요.").css("color", "#D9534F");
+				} else {
+					msgBox.text("학교 이메일을 확인해주세요.").css("color", "#D9534F");
+				}
+			}
+		});
+	});
+
+	// 학교 웹메일 인증번호 확인 버튼 이벤트
+	$("#btnVerifyMail").on("click", function() {
+		var code = $.trim($("#authCode").val());
+		var msgBox = $("#mailCheckMsg");
+
+		if (!code) {
+			msgBox.text("인증번호 6자리를 입력해주세요.").css("color", "#D9534F");
+			$("#authCode").focus();
+			return;
+		}
+
+		$.ajax({
+			url: "<c:url value='/member/verifyMail'/>",
+			type: "POST",
+			beforeSend: function(xhr) {
+				if (csrfHeaderName && csrfTokenValue) {
+					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+				}
+			},
+			data: { code: code },
+			success: function(result) {
+				if (result === "verified") {
+					msgBox.text("학교 웹메일 인증이 완료되었습니다.").css("color", "#2E7D32");
+					$("#schoolEmail").prop("readonly", true);
+					$("#authCode").prop("readonly", true);
+				} else if (result === "no_code") {
+					msgBox.text("먼저 인증번호 발송 버튼을 눌러주세요.").css("color", "#D9534F");
+				} else {
+					msgBox.text("인증번호가 일치하지 않습니다.").css("color", "#D9534F");
 				}
 			}
 		});

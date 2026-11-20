@@ -248,6 +248,18 @@
             <artifactId>ojdbc7</artifactId>
             <version>12.1.0.2</version>
         </dependency>
+
+		<!-- 학교 웹메일 인증 발송용 (Spring Mail + JavaMail) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
