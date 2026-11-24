@@ -12,5 +12,6 @@ public class MenuVO {
 	private String category;
 	private Double avgRating;
 	private int bookmarkCnt;
+	private boolean bookmarked;
 	private Date regDate;
 }

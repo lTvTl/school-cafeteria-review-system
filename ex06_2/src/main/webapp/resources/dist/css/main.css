@@ -32,12 +32,22 @@
 .cafeteria-main .review-compose-note { margin: 8px 0 0; color: #6c5a4e; font-size: 14px; }
 .cafeteria-main .review-score { margin-bottom: 24px; }
 .cafeteria-main .review-score legend { margin-bottom: 10px; border: 0; font-size: 16px; font-weight: bold; }
-.cafeteria-main .review-score-options { display: flex; flex-wrap: wrap; gap: 8px; }
-.cafeteria-main .review-score-option { position: relative; margin: 0; cursor: pointer; }
-.cafeteria-main .review-score-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.cafeteria-main .review-score-option span { display: block; padding: 10px 16px; border: 1px solid #d8bca4; border-radius: 8px; color: #843900; }
-.cafeteria-main .review-score-option input:checked + span { background: #fff0df; border-color: #a34400; }
-.cafeteria-main .review-score-option input:focus-visible + span { outline: 2px solid #a34400; outline-offset: 2px; }
 .cafeteria-main .review-compose textarea { height: auto; min-height: 120px; resize: vertical; }
 .cafeteria-main .review-compose-actions { margin-top: 18px; text-align: right; }
 .cafeteria-main .review-compose-actions .btn { background: #a34400; border-color: #a34400; }
+.cafeteria-main .daily-review-list { margin-top: 32px; border-top: 1px solid #f0d8c2; padding-top: 24px; }
+.cafeteria-main .daily-rating-summary strong { font-size: 28px; }
+.cafeteria-main .daily-rating-summary > span, .cafeteria-main .daily-review-score { color: #b95000; }
+.cafeteria-main .daily-review-card { padding: 20px 0; border-bottom: 1px solid #f0d8c2; }
+.cafeteria-main .daily-review-meta { display: flex; justify-content: space-between; gap: 16px; overflow-wrap: anywhere; }
+.cafeteria-main .daily-review-score { flex-shrink: 0; }
+.cafeteria-main .daily-review-text { white-space: pre-wrap; overflow-wrap: anywhere; margin: 12px 0; }
+.cafeteria-main .daily-review-date { color: #6c5a4e; font-size: 13px; }
+.cafeteria-main .daily-own-review { background: #fff8f0; border-radius: 12px; padding: 20px; }
+.cafeteria-main .daily-review-form { margin-top: 18px; }
+.cafeteria-main .daily-remove-review { display: inline-block; margin: 12px 0 0 8px; }
+.cafeteria-main .daily-pagination { display: flex; justify-content: center; gap: 24px; margin-top: 24px; }
+.cafeteria-main .daily-empty-state { text-align: center; padding: 28px 8px; color: #6c5a4e; }
+.cafeteria-main .daily-distribution { margin-bottom: 16px; }
+.cafeteria-main .daily-distribution ul { padding-left: 20px; }
+.cafeteria-main .daily-own-review summary, .cafeteria-main .daily-distribution summary { cursor: pointer; }

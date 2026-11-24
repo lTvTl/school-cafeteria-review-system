@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.zerock.service.DailyDietService;
+import org.zerock.service.DailyReviewService;
+import org.zerock.domain.DailyReviewPage;
 
 public class HomeControllerTests {
     private MockMvc mvc(List<String> calls) {
@@ -24,6 +26,12 @@ public class HomeControllerTests {
             });
         HomeController controller = new HomeController();
         ReflectionTestUtils.setField(controller, "dailyDietService", service);
+        DailyReviewService reviews = (DailyReviewService) Proxy.newProxyInstance(
+            getClass().getClassLoader(), new Class<?>[]{DailyReviewService.class}, (proxy, method, args) -> {
+                assertEquals("getPage", method.getName());
+                DailyReviewPage page = new DailyReviewPage(); page.setPage((Integer) args[0]); return page;
+            });
+        ReflectionTestUtils.setField(controller, "dailyReviewService", reviews);
         return MockMvcBuilders.standaloneSetup(controller)
             .setViewResolvers(new InternalResourceViewResolver("/WEB-INF/views/", ".jsp")).build();
     }
@@ -32,7 +40,7 @@ public class HomeControllerTests {
         List<String> calls = new ArrayList<>();
         mvc(calls).perform(get("/main").principal(() -> "user0").param("reviewPage", "2"))
             .andExpect(status().isOk()).andExpect(view().name("main"))
-            .andExpect(model().attributeExists("todayDietList", "tomorrowDietList"))
+            .andExpect(model().attributeExists("todayDietList", "tomorrowDietList", "dailyReviewPage"))
             .andExpect(model().attributeDoesNotExist("menuReviewList", "reviewPage", "reviewPages"));
         assertEquals("[0:user0, 1:user0]", calls.toString());
     }

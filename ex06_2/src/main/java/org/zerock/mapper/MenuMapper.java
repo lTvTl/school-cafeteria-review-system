@@ -9,7 +9,7 @@ public interface MenuMapper {
 
 	public List<MenuVO> getList();
 
-	public List<MenuVO> getListByCategory(@Param("category") String category);
+	public List<MenuVO> getListByCategory(@Param("category") String category, @Param("userid") String userid);
 
 	public MenuVO read(@Param("menuId") Long menuId);
 

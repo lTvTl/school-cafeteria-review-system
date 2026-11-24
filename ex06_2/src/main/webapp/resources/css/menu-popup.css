@@ -23,11 +23,6 @@ h2 { font-size: 18px; margin: 0 0 16px; }
 .write-section { margin: 24px 0 30px; padding: 20px; background: #fff; border: 1px solid #f0dcc9; border-radius: 16px; }
 .star-field { padding: 0; border: 0; margin: 0 0 14px; min-width: 0; }
 .star-field legend, .review-form > label { font-size: 13px; font-weight: bold; margin-bottom: 7px; }
-.star-picker { display: flex; align-items: center; gap: 4px; position: relative; }
-.star-picker input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.star-picker label { font-size: 34px; line-height: 1.2; color: #c6bdb5; cursor: pointer; border-radius: 4px; }
-.star-picker label.selected, .star-picker input:checked + label { color: #d65300; }
-.star-picker input:focus-visible + label { outline: 2px solid #a63e00; outline-offset: 2px; }
 textarea { display: block; width: 100%; min-width: 0; resize: vertical; padding: 11px; border: 1px solid #d9c8b9; border-radius: 8px; background: #fffdfa; color: #3d312a; }
 .primary-button { display: inline-block; border: 0; border-radius: 8px; padding: 10px 16px; background: #ba4800; color: #fff; font-weight: bold; text-align: center; text-decoration: none; }
 .review-form .primary-button { margin-top: 10px; width: 100%; }

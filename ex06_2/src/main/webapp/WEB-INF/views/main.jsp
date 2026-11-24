@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@include file="includes/header.jsp"%>
 <link href="<c:url value='/resources/dist/css/main.css'/>" rel="stylesheet">
+<link href="<c:url value='/resources/css/star-rating.css'/>" rel="stylesheet">
 <c:set var="categoryLabels" value="${{'MAIN':'메인', 'SIDE':'반찬', 'DESSERT':'디저트', 'DRINK':'음료', 'ETC':'기타'}}"/>
 
 <main class="cafeteria-main" lang="ko">
@@ -52,29 +53,9 @@
         </c:forEach>
     </div>
 
-    <section class="review-compose" aria-labelledby="review-compose-title">
-        <div class="card-heading">
-            <h2 id="review-compose-title">리뷰 작성</h2>
-            <p class="review-compose-note">오늘 먹은 메뉴는 어땠나요?</p>
-        </div>
-        <div class="card-body">
-            <fieldset class="review-score">
-                <legend>별점</legend>
-                <div class="review-score-options">
-                    <c:forEach begin="1" end="5" var="score">
-                        <label class="review-score-option">
-                            <input type="radio" name="starScore" value="${score}">
-                            <span><i class="fa fa-star" aria-hidden="true"></i> ${score}점</span>
-                        </label>
-                    </c:forEach>
-                </div>
-            </fieldset>
-            <label for="home-review-text">리뷰 내용</label>
-            <textarea id="home-review-text" name="reviewText" class="form-control" rows="4" maxlength="1000" aria-describedby="home-review-hint" placeholder="맛과 양, 좋았던 점을 자유롭게 남겨 주세요."></textarea>
-            <p id="home-review-hint" class="review-compose-note">최대 1,000자 · 리뷰 등록은 준비 중입니다.</p>
-            <div class="review-compose-actions"><button type="button" class="btn btn-primary" disabled>리뷰 등록</button></div>
-        </div>
-    </section>
+    <%@include file="includes/daily-reviews.jsp"%>
 </main>
 <script src="<c:url value='/resources/js/home-menu.js'/>"></script>
+<script src="<c:url value='/resources/js/star-rating.js'/>"></script>
+<script src="<c:url value='/resources/js/daily-review.js'/>"></script>
 <%@include file="includes/footer.jsp"%>

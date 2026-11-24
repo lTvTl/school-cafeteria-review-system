@@ -19,7 +19,7 @@ const cards = [card(), card()];
 vm.runInNewContext(source, {
     jQuery: body => body,
     document: {querySelectorAll: () => cards},
-    window: {matchMedia: () => ({matches: reduced})}
+    window: {location: {pathname: '/controller/main'}, matchMedia: () => ({matches: reduced})}
 });
 function click(c) { let prevented = false; c.summary.click({preventDefault() { prevented = true; }}); assert(prevented); }
 const first = cards[0];

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="ui"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><c:out value="${menu.menuName}" /> 리뷰</title>
     <link rel="stylesheet" href="<c:url value='/resources/css/menu-popup.css'/>">
+    <link rel="stylesheet" href="<c:url value='/resources/css/star-rating.css'/>">
+    <script defer src="<c:url value='/resources/js/star-rating.js'/>"></script>
     <script defer src="<c:url value='/resources/js/menu-popup.js'/>"></script>
 </head>
 <body data-menu-id="${menu.menuId}" data-review-saved="${reviewSaved eq true}">
@@ -46,12 +49,7 @@
             <form method="post" action="<c:out value='${createUrl}'/>" class="review-form">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                 <fieldset class="star-field"><legend>별점을 선택해 주세요</legend>
-                    <div class="star-picker">
-                        <c:forEach begin="1" end="5" var="score">
-                            <input type="radio" id="new-star-${score}" name="starScore" value="${score}" required>
-                            <label for="new-star-${score}" title="${score}점"><span aria-hidden="true">★</span><span class="sr-only">${score}점</span></label>
-                        </c:forEach>
-                    </div>
+                    <ui:starRating id="new-star"/>
                 </fieldset>
                 <label for="new-review">리뷰 내용</label>
                 <textarea id="new-review" name="reviewText" rows="3" maxlength="1000" required placeholder="음식에 대한 솔직한 한줄평을 남겨 주세요."></textarea>
@@ -78,12 +76,7 @@
                                 <c:url value="/menu/${menu.menuId}/reviews/${review.reviewId}/modify" var="modifyUrl" />
                                 <form method="post" action="<c:out value='${modifyUrl}'/>" class="review-form">
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                                    <fieldset class="star-field"><legend>별점 수정</legend><div class="star-picker">
-                                        <c:forEach begin="1" end="5" var="score">
-                                            <input type="radio" id="edit-${review.reviewId}-star-${score}" name="starScore" value="${score}" ${score eq review.starScore ? 'checked' : ''} required>
-                                            <label for="edit-${review.reviewId}-star-${score}" title="${score}점"><span aria-hidden="true">★</span><span class="sr-only">${score}점</span></label>
-                                        </c:forEach>
-                                    </div></fieldset>
+                                    <fieldset class="star-field"><legend>별점 수정</legend><ui:starRating id="edit-${review.reviewId}-star" value="${review.starScore}"/></fieldset>
                                     <label for="edit-text-${review.reviewId}">리뷰 내용 수정</label>
                                     <textarea id="edit-text-${review.reviewId}" name="reviewText" rows="3" maxlength="1000" required><c:out value="${review.reviewText}" /></textarea>
                                     <button type="submit" class="primary-button">수정 저장</button>

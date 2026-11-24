@@ -45,7 +45,7 @@ function category(blocked) {
     }
     vm.runInNewContext(categoryCode, {
         window: win,
-        document: { querySelectorAll: function () { return links; } },
+        document: { querySelectorAll: function (selector) { return selector === '.menu-popup-link' ? links : []; } },
         XMLHttpRequest: Xhr
     });
     return {

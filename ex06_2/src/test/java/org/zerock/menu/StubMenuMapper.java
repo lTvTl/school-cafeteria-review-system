@@ -12,6 +12,7 @@ public class StubMenuMapper implements MenuMapper {
 	public final List<MenuVO> rows = new ArrayList<>();
 	public int calls;
 	public String lastCategory;
+	public String lastUserid;
 	public RuntimeException failure;
 
 	@Override
@@ -21,9 +22,10 @@ public class StubMenuMapper implements MenuMapper {
 	}
 
 	@Override
-	public List<MenuVO> getListByCategory(String category) {
+	public List<MenuVO> getListByCategory(String category, String userid) {
 		calls++;
 		lastCategory = category;
+		lastUserid = userid;
 		if (failure != null) {
 			throw failure;
 		}
@@ -38,6 +40,6 @@ public class StubMenuMapper implements MenuMapper {
 
 	@Override
 	public int getCountByCategory(String category) {
-		return getListByCategory(category).size();
+		return getListByCategory(category, null).size();
 	}
 }

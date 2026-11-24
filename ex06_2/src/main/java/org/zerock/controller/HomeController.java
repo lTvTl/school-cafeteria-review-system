@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
 import org.zerock.service.DailyDietService;
+import org.zerock.service.DailyReviewService;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController {
 	@Autowired
 	private DailyDietService dailyDietService;
+	@Autowired
+	private DailyReviewService dailyReviewService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -43,7 +47,8 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/main", method = RequestMethod.GET)
-	public String main(Principal principal, Model model) {
+	public String main(Principal principal, Model model,
+			@RequestParam(value = "reviewPage", defaultValue = "1") int reviewPage) {
 		String userid = principal == null ? null : principal.getName();
 		model.addAttribute("todayDietList", Collections.emptyList());
 		model.addAttribute("tomorrowDietList", Collections.emptyList());
@@ -53,6 +58,12 @@ public class HomeController {
 		} catch (DataAccessException e) {
 			logger.error("Could not load cafeteria menus", e);
 			model.addAttribute("menuLoadError", "식단을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+		}
+		try {
+			model.addAttribute("dailyReviewPage", dailyReviewService.getPage(reviewPage));
+		} catch (DataAccessException e) {
+			logger.error("Could not load daily reviews", e);
+			model.addAttribute("dailyReviewLoadError", "오늘의 학식 리뷰를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
 		}
 		return "main";
 	}

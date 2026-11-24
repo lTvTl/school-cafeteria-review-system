@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.DailyReviewMapper">
+    <!-- Explicit KST: independent of DB host/session/JVM timezone. -->
+    <sql id="today">TRUNC(CAST(SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul' AS DATE))</sql>
+    <resultMap id="reviewMap" type="org.zerock.domain.DailyReviewVO">
+        <id property="dailyReviewId" column="daily_review_id"/>
+        <result property="serveDate" column="serve_date"/>
+        <result property="userid" column="userid"/>
+        <result property="userName" column="user_name"/>
+        <result property="starScore" column="star_score"/>
+        <result property="reviewText" column="review_text"/>
+        <result property="regDate" column="regdate"/>
+        <result property="updateDate" column="updatedate"/>
+        <result property="editable" column="editable"/>
+    </resultMap>
+    <resultMap id="summaryMap" type="org.zerock.domain.DailyReviewSummary">
+        <result property="avgRating" column="avg_rating"/>
+        <result property="reviewCount" column="review_count"/>
+        <result property="star1" column="star1"/>
+        <result property="star2" column="star2"/>
+        <result property="star3" column="star3"/>
+        <result property="star4" column="star4"/>
+        <result property="star5" column="star5"/>
+    </resultMap>
+    <sql id="columns">
+        r.daily_review_id, r.serve_date, r.userid, m.username AS user_name,
+        r.star_score, r.review_text, r.regdate, r.updatedate,
+        CASE WHEN r.serve_date = <include refid="today"/> THEN 1 ELSE 0 END AS editable
+    </sql>
+    <select id="today" resultType="java.util.Date">SELECT <include refid="today"/> FROM dual</select>
+    <select id="lockUser" resultType="string">
+        SELECT userid FROM tbl_member WHERE userid = #{userid} FOR UPDATE
+    </select>
+    <select id="getSummary" resultMap="summaryMap">
+        SELECT NVL(ROUND(AVG(star_score), 2), 0) AS avg_rating, COUNT(*) AS review_count,
+            COUNT(CASE WHEN star_score = 1 THEN 1 END) AS star1,
+            COUNT(CASE WHEN star_score = 2 THEN 1 END) AS star2,
+            COUNT(CASE WHEN star_score = 3 THEN 1 END) AS star3,
+            COUNT(CASE WHEN star_score = 4 THEN 1 END) AS star4,
+            COUNT(CASE WHEN star_score = 5 THEN 1 END) AS star5
+        FROM tbl_daily_review WHERE serve_date = #{serveDate,jdbcType=DATE}
+    </select>
+    <select id="getList" resultMap="reviewMap">
+        SELECT * FROM (
+            SELECT <include refid="columns"/>,
+                ROW_NUMBER() OVER (ORDER BY r.regdate DESC, r.daily_review_id DESC) AS rn
+            FROM tbl_daily_review r JOIN tbl_member m ON m.userid = r.userid
+            WHERE r.serve_date = #{serveDate,jdbcType=DATE}
+        ) WHERE rn BETWEEN #{start} AND #{end} ORDER BY rn
+    </select>
+    <select id="findOwn" resultMap="reviewMap">
+        SELECT <include refid="columns"/>
+        FROM tbl_daily_review r JOIN tbl_member m ON m.userid = r.userid
+        WHERE r.serve_date = #{serveDate,jdbcType=DATE} AND r.userid = #{userid}
+    </select>
+    <select id="read" resultMap="reviewMap">
+        SELECT <include refid="columns"/>
+        FROM tbl_daily_review r JOIN tbl_member m ON m.userid = r.userid
+        WHERE r.daily_review_id = #{reviewId}
+    </select>
+    <insert id="insert">
+        <selectKey keyProperty="dailyReviewId" resultType="long" order="BEFORE">
+            SELECT seq_daily_review.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO tbl_daily_review (daily_review_id, serve_date, userid, star_score, review_text, regdate)
+        SELECT #{dailyReviewId}, <include refid="today"/>, #{userid}, #{starScore}, #{reviewText},
+            CAST(SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul' AS DATE)
+        FROM dual WHERE #{serveDate,jdbcType=DATE} = <include refid="today"/>
+    </insert>
+    <update id="update">
+        UPDATE tbl_daily_review SET star_score = #{starScore}, review_text = #{reviewText},
+            updatedate = CAST(SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul' AS DATE)
+        WHERE daily_review_id = #{dailyReviewId} AND userid = #{userid}
+          AND serve_date = <include refid="today"/>
+    </update>
+    <!-- Hard delete permits re-registration; the day/user UNIQUE key remains authoritative. -->
+    <delete id="delete">
+        DELETE FROM tbl_daily_review WHERE daily_review_id = #{reviewId} AND userid = #{userid}
+    </delete>
+</mapper>

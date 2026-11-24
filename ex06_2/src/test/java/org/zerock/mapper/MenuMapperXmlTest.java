@@ -32,7 +32,8 @@ public class MenuMapperXmlTest {
 		for (ResultMapping mapping : resultMap.getResultMappings()) {
 			actual.put(mapping.getColumn(), mapping.getProperty());
 		}
-		assertEquals(6, actual.size());
+		assertEquals(7, actual.size());
+		assertEquals("bookmarked", actual.get("bookmarked"));
 		assertEquals("menuId", actual.get("menu_id"));
 		assertEquals("menuName", actual.get("menu_name"));
 		assertEquals("category", actual.get("category"));
@@ -51,7 +52,7 @@ public class MenuMapperXmlTest {
 			String sql = bound.getSql().replaceAll("\\s+", " ").trim();
 			assertTrue(sql.contains("where category = ?"));
 			assertFalse(sql.contains(injection));
-			assertEquals("category", bound.getParameterMappings().get(0).getProperty());
+			assertTrue(bound.getParameterMappings().stream().anyMatch(p -> p.getProperty().equals("category")));
 		}
 	}
 

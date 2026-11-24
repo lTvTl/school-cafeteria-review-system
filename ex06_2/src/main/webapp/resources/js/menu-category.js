@@ -51,4 +51,66 @@
             xhr.send();
         });
     });
+    // Hearts have their own buttons and handlers; only food-name links open review popups.
+    Array.prototype.forEach.call(document.querySelectorAll('.bookmark-button'), function (button) {
+        var root = button.closest('.food-category');
+        var cell = button.closest('.menu-bookmarks');
+        var busy = false;
+        function message(text, login) {
+            var feedback = root.querySelector('.bookmark-feedback');
+            feedback.hidden = false;
+            feedback.querySelector('.bookmark-feedback-text').textContent = text;
+            feedback.querySelector('.bookmark-login').hidden = !login;
+        }
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (busy) return;
+            if (root.getAttribute('data-bookmark-authenticated') !== 'true') {
+                message('북마크하려면 로그인해 주세요.', true);
+                return;
+            }
+            var id = button.getAttribute('data-menu-id');
+            var add = button.getAttribute('data-bookmarked') !== 'true';
+            var header = root.getAttribute('data-csrf-header');
+            var token = root.getAttribute('data-csrf-token');
+            if (!header || !token) { message('페이지를 새로고침한 후 다시 시도해 주세요.', false); return; }
+            busy = true;
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+            var xhr = new XMLHttpRequest();
+            function finish() { busy = false; button.disabled = false; button.removeAttribute('aria-busy'); }
+            function failed() { finish(); message('북마크를 변경하지 못했습니다. 상태를 확인하려면 새로고침해 주세요.', false); }
+            xhr.open('POST', button.getAttribute(add ? 'data-add-url' : 'data-remove-url'), true);
+            xhr.timeout = 15000;
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.setRequestHeader(header, token);
+            xhr.onload = function () {
+                finish();
+                if (xhr.status === 401 || xhr.status === 403 || /\/customLogin(?:[?#]|$)/.test(xhr.responseURL || '')) {
+                    message('로그인 상태가 만료되었거나 요청을 확인할 수 없습니다. 다시 로그인하거나 새로고침해 주세요.', true);
+                    return;
+                }
+                if (xhr.status !== 200) { message(xhr.status === 404 ? '음식을 찾을 수 없습니다. 새로고침해 주세요.' : '북마크를 변경하지 못했습니다. 잠시 후 다시 시도해 주세요.', false); return; }
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    if (String(data.menuId) !== id || typeof data.bookmarked !== 'boolean' || data.bookmarked !== add ||
+                            typeof data.bookmarkCnt !== 'number' || !isFinite(data.bookmarkCnt) ||
+                            data.bookmarkCnt < 0 || Math.floor(data.bookmarkCnt) !== data.bookmarkCnt) throw new Error('Unexpected bookmark response');
+                    button.setAttribute('data-bookmarked', String(data.bookmarked));
+                    button.setAttribute('aria-pressed', String(data.bookmarked));
+                    button.setAttribute('aria-label', button.getAttribute('data-menu-name') + ' 북마크 ' + (data.bookmarked ? '해제' : '등록'));
+                    var icon = button.querySelector('.fa');
+                    icon.classList.toggle('fa-heart', data.bookmarked);
+                    icon.classList.toggle('fa-heart-o', !data.bookmarked);
+                    cell.querySelector('.bookmark-count').textContent = data.bookmarkCnt.toLocaleString('ko-KR');
+                    message(data.bookmarked ? '북마크에 등록했습니다.' : '북마크를 해제했습니다.', false);
+                } catch (ignored) { failed(); }
+            };
+            xhr.onerror = failed;
+            xhr.ontimeout = failed;
+            xhr.onabort = failed;
+            try { xhr.send(); } catch (ignored) { failed(); }
+        });
+    });
 }());

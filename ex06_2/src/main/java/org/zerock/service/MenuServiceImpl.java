@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.zerock.domain.MenuCategory;
 import org.zerock.domain.MenuVO;
 import org.zerock.mapper.MenuMapper;
@@ -24,7 +27,9 @@ public class MenuServiceImpl implements MenuService {
 	@Override
 	public List<MenuVO> getListByCategory(String category) {
 		MenuCategory.fromCode(category);
-		return mapper.getListByCategory(category);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String userid = auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken ? null : auth.getName();
+		return mapper.getListByCategory(category, userid);
 	}
 
 	@Override

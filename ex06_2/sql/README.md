@@ -8,8 +8,13 @@
 2. [05_create_menu_review.sql](menu/05_create_menu_review.sql) — 메뉴 리뷰
 3. [09_create_daily_diet.sql](menu/09_create_daily_diet.sql) — 오늘·내일 식단
 4. [10_create_bookmark.sql](menu/10_create_bookmark.sql) — 북마크
+5. [12_create_daily_review.sql](menu/12_create_daily_review.sql) — 날짜별 전체 학식 리뷰 (회원 테이블만 참조)
 
 이미 만든 테이블의 생성 SQL은 다시 실행하지 않습니다. DDL은 자동 커밋되므로 중간 실패 시 생성된 객체를 먼저 확인하세요.
+
+기존 설치에는 12번만 추가 실행합니다. `tbl_menu_review`, `tbl_daily_diet`, 기존 데이터는 변경하지 않습니다. 일별 리뷰는 `serve_date + userid` UNIQUE 제약으로 날짜당 1개를 유지합니다. 일별 리뷰 삭제는 물리 삭제이며 삭제 후 재작성할 수 있습니다. 개별 메뉴 리뷰의 기존 삭제/재작성 정책은 변경하지 않습니다.
+
+일별 리뷰의 날짜와 등록·수정 시각은 Oracle의 `SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul'`로 결정합니다. 클라이언트 날짜는 받지 않습니다. 12번 끝의 확인 쿼리로 DB 서버 시각을 확인하세요. 기존 식단/메뉴 리뷰는 `TRUNC(SYSDATE)`를 사용하므로 DB 호스트도 한국 시간으로 운영해야 합니다. `DBTIMEZONE`이 UTC라는 사실만으로 호스트 시각이 UTC인 것은 아니며, `ALTER SESSION TIME_ZONE`은 `SYSDATE`를 바꾸지 않습니다.
 
 ## 화면 테스트
 

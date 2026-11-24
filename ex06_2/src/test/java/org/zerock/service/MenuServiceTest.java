@@ -3,11 +3,15 @@ package org.zerock.service;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.zerock.domain.MenuVO;
 import org.zerock.menu.StubMenuMapper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class MenuServiceTest {
+	@After public void clearSecurity() { SecurityContextHolder.clearContext(); }
 	private StubMenuMapper mapper;
 	private MenuServiceImpl service;
 
@@ -46,5 +50,12 @@ public class MenuServiceTest {
 			assertThrows(IllegalArgumentException.class, () -> service.get(id));
 		}
 		assertEquals(0, mapper.calls);
+	}
+
+	@Test public void categoryReadsAuthenticatedBookmarkStateInOneQuery() {
+		SecurityContextHolder.clearContext(); service.getListByCategory("MAIN");
+		assertNull(mapper.lastUserid); assertEquals(1,mapper.calls);
+		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("alice","unused",java.util.Collections.emptyList()));
+		service.getListByCategory("SIDE"); assertEquals("alice",mapper.lastUserid); assertEquals(2,mapper.calls);
 	}
 }

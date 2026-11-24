@@ -97,7 +97,8 @@ public class CategoryControllerTest {
 	@Test
 	public void existingHomeMappingsStillResolve() throws Exception {
 		mvc.perform(get("/")).andExpect(view().name("redirect:/main"));
-		for (String page : new String[] { "main", "mypage", "admin", "customSignup" }) {
+		// /mypage moved to MemberController in 520fd1d; this fixture tests HomeController mappings.
+		for (String page : new String[] { "main", "admin", "customSignup" }) {
 			mvc.perform(get("/" + page)).andExpect(status().isOk()).andExpect(view().name(page));
 		}
 	}
@@ -108,6 +109,10 @@ public class CategoryControllerTest {
             getClass().getClassLoader(), new Class<?>[]{org.zerock.service.DailyDietService.class},
             (proxy, method, args) -> java.util.Collections.emptyList());
         org.springframework.test.util.ReflectionTestUtils.setField(home, "dailyDietService", reviews);
+        org.zerock.service.DailyReviewService dailyReviews = (org.zerock.service.DailyReviewService) java.lang.reflect.Proxy.newProxyInstance(
+            getClass().getClassLoader(), new Class<?>[]{org.zerock.service.DailyReviewService.class},
+            (proxy, method, args) -> new org.zerock.domain.DailyReviewPage());
+        org.springframework.test.util.ReflectionTestUtils.setField(home, "dailyReviewService", dailyReviews);
         return home;
     }
 }

@@ -9,6 +9,7 @@
 		<result property="category" column="category" />
 		<result property="avgRating" column="avg_rating" />
 		<result property="bookmarkCnt" column="bookmark_cnt" />
+		<result property="bookmarked" column="bookmarked" />
 		<result property="regDate" column="regdate" />
 	</resultMap>
 
@@ -23,8 +24,11 @@
 	</select>
 
 	<select id="getListByCategory" resultMap="menuResultMap">
-		select <include refid="menuColumns" />
-		from tbl_menu
+		select m.menu_id, m.menu_name, m.category, m.avg_rating, m.regdate,
+			(select count(*) from tbl_bookmark b where b.menu_id = m.menu_id) as bookmark_cnt,
+			case when exists (select 1 from tbl_bookmark b where b.menu_id = m.menu_id
+				and b.userid = #{userid,jdbcType=VARCHAR}) then 1 else 0 end as bookmarked
+		from tbl_menu m
 		where category = #{category, jdbcType=VARCHAR}
 		order by menu_name asc, menu_id asc
 	</select>

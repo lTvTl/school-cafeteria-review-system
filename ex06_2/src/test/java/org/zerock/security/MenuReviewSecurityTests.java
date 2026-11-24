@@ -54,7 +54,7 @@ public class MenuReviewSecurityTests {
         return request;
     }
     @Test public void anonymousCannotReachAnyWriteEndpoint() throws Exception {
-        for (String path : new String[]{"/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
+        for (String path : new String[]{"/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove", "/daily-reviews", "/daily-reviews/1/modify", "/daily-reviews/1/remove", "/menu/1/bookmark/add", "/menu/1/bookmark/remove"}) {
             AtomicBoolean reached = new AtomicBoolean(); MockHttpServletResponse response = new MockHttpServletResponse();
             filter.doFilter(request(path, false, true), response, (req, res) -> reached.set(true));
             assertFalse(reached.get()); assertEquals(302, response.getStatus());
@@ -62,7 +62,7 @@ public class MenuReviewSecurityTests {
         }
     }
     @Test public void authenticatedWriteRequiresCsrf() throws Exception {
-        for (String path : new String[]{"/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove"}) {
+        for (String path : new String[]{"/menu/1/reviews", "/menu/1/reviews/1/modify", "/menu/1/reviews/1/remove", "/daily-reviews", "/daily-reviews/1/modify", "/daily-reviews/1/remove", "/menu/1/bookmark/add", "/menu/1/bookmark/remove"}) {
             AtomicBoolean reached = new AtomicBoolean(); MockHttpServletResponse response = new MockHttpServletResponse();
             filter.doFilter(request(path, true, false), response, (req, res) -> reached.set(true));
             assertFalse(reached.get()); assertEquals(302, response.getStatus());
@@ -84,6 +84,15 @@ public class MenuReviewSecurityTests {
                 assertEquals(302, response.getStatus());
                 assertTrue(response.getRedirectedUrl().endsWith(loggedIn ? "/accessError" : "/customLogin"));
             }
+        }
+    }
+
+    @Test public void anonymousCanReadBothReviewSystems() throws Exception {
+        for (String path : new String[]{"/main", "/daily-reviews", "/menu/1", "/menu/1/summary"}) {
+            MockHttpServletRequest request = request(path, false, false); request.setMethod("GET");
+            AtomicBoolean reached = new AtomicBoolean();
+            filter.doFilter(request, new MockHttpServletResponse(), (req,res) -> reached.set(true));
+            assertTrue(path, reached.get());
         }
     }
 
