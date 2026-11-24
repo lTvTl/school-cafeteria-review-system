@@ -57,11 +57,6 @@ public class HomeController {
 		return "main";
 	}
 	
-	@RequestMapping(value = "/mypage", method = RequestMethod.GET)
-	public String mypage() {
-		return "mypage";
-	}
-	
 	@RequestMapping(value = "/customSignup", method = RequestMethod.GET)
 	public String signup() {
 		return "customSignup";

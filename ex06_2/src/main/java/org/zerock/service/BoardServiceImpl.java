@@ -191,4 +191,12 @@ public class BoardServiceImpl implements BoardService {
 		attachMapper.deleteAll(bno);
 	}
 
+	@Override
+	public List<BoardVO> getListByWriter(String writer) {
+
+		log.info("get board list by writer: " + writer);
+
+		return mapper.getListByWriter(writer);
+	}
+
 }

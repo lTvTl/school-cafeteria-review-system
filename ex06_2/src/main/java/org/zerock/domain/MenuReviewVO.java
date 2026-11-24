@@ -7,6 +7,7 @@ import lombok.Data;
 public class MenuReviewVO {
 	private Long reviewId;
 	private Long menuId;
+	private String menuName;
 	private Long dietId;
 	private String userid;
 	private String userName;

@@ -1,8 +1,12 @@
 package org.zerock.controller;
 
+import java.security.Principal;
+import java.util.Collections;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.domain.MemberVO;
+import org.zerock.security.domain.CustomUser;
+import org.zerock.service.BoardService;
 import org.zerock.service.MemberService;
+import org.zerock.service.MenuReviewService;
+import org.zerock.service.ReplyService;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -28,6 +36,15 @@ public class MemberController {
 
 	@Setter(onMethod_ = @Autowired)
 	private MemberService memberService;
+
+	@Setter(onMethod_ = @Autowired)
+	private MenuReviewService menuReviewService;
+
+	@Setter(onMethod_ = @Autowired)
+	private BoardService boardService;
+
+	@Setter(onMethod_ = @Autowired)
+	private ReplyService replyService;
 
 	/**
 	 * 회원가입 폼 제출 처리 (POST /customSignup)
@@ -76,7 +93,7 @@ public class MemberController {
 		session.removeAttribute("authCode");
 		session.removeAttribute("emailVerified");
 
-		rttr.addFlashAttribute("signupMsg", "회원가입이 완료되었습니다. 로그인해주세요.");
+		rttr.addFlashAttribute("msg", "회원가입이 완료되었습니다. 로그인해주세요.");
 		return "redirect:/customLogin";
 	}
 
@@ -137,6 +154,108 @@ public class MemberController {
 			return "verified";
 		}
 		return "mismatch";
+	}
+
+	/**
+	 * 마이페이지 조회 (GET /mypage)
+	 * - 내 정보, 내가 작성한 메뉴 리뷰(myReviewList), 게시글(myBoardList), 댓글(myReplyList) 조회
+	 */
+	@GetMapping("/mypage")
+	public String mypage(Principal principal, Model model) {
+		if (principal == null) {
+			return "redirect:/customLogin";
+		}
+		String userid = principal.getName();
+
+		model.addAttribute("member", memberService.get(userid));
+		model.addAttribute("myReviewList", Collections.emptyList());
+		model.addAttribute("myBoardList", Collections.emptyList());
+		model.addAttribute("myReplyList", Collections.emptyList());
+
+		try {
+			model.addAttribute("myReviewList", menuReviewService.getListByUserid(userid));
+		} catch (Exception e) {
+			log.error("마이페이지 리뷰 목록 조회 실패: " + e.getMessage(), e);
+		}
+		try {
+			model.addAttribute("myBoardList", boardService.getListByWriter(userid));
+		} catch (Exception e) {
+			log.error("마이페이지 게시글 목록 조회 실패: " + e.getMessage(), e);
+		}
+		try {
+			model.addAttribute("myReplyList", replyService.getListByReplyer(userid));
+		} catch (Exception e) {
+			log.error("마이페이지 댓글 목록 조회 실패: " + e.getMessage(), e);
+		}
+
+		return "mypage";
+	}
+
+	/**
+	 * 마이페이지 회원 정보 수정 화면 (GET /mypage/edit)
+	 */
+	@GetMapping("/mypage/edit")
+	public String editMemberForm(Principal principal, Model model) {
+		if (principal == null) {
+			return "redirect:/customLogin";
+		}
+		model.addAttribute("member", memberService.get(principal.getName()));
+		return "mypageEdit";
+	}
+
+	/**
+	 * 마이페이지 회원 정보 수정 (POST /mypage/update)
+	 * - 이름(userName) 수정 및 새 비밀번호(userpw, 선택 입력) 변경
+	 */
+	@PostMapping("/mypage/update")
+	public String updateMember(@RequestParam("userName") String userName,
+			@RequestParam(value = "userpw", required = false) String userpw,
+			@RequestParam(value = "userpwConfirm", required = false) String userpwConfirm,
+			Authentication authentication, RedirectAttributes rttr) {
+		if (authentication == null) {
+			return "redirect:/customLogin";
+		}
+
+		String userid = authentication.getName();
+		String trimmedName = userName != null ? userName.trim() : "";
+		String trimmedPw = userpw != null ? userpw.trim() : "";
+		String trimmedConfirm = userpwConfirm != null ? userpwConfirm.trim() : "";
+
+		if (trimmedName.isEmpty()) {
+			rttr.addFlashAttribute("error", "이름을 입력해주세요.");
+			return "redirect:/mypage/edit";
+		}
+
+		if (!trimmedPw.isEmpty()) {
+			if (trimmedPw.length() < 8 || !trimmedPw.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?~`].*")) {
+				rttr.addFlashAttribute("error", "비밀번호는 8자리 이상이어야 하며, 특수문자를 최소 1개 포함해야 합니다.");
+				return "redirect:/mypage/edit";
+			}
+			if (!trimmedPw.equals(trimmedConfirm)) {
+				rttr.addFlashAttribute("error", "새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+				return "redirect:/mypage/edit";
+			}
+		}
+
+		MemberVO member = new MemberVO();
+		member.setUserid(userid);
+		member.setUserName(trimmedName);
+		member.setUserpw(trimmedPw);
+
+		if (memberService.modify(member)) {
+			// 세션에 저장된 로그인 사용자 이름도 즉시 갱신
+			if (authentication.getPrincipal() instanceof CustomUser) {
+				CustomUser customUser = (CustomUser) authentication.getPrincipal();
+				if (customUser.getMember() != null) {
+					customUser.getMember().setUserName(trimmedName);
+				}
+			}
+			rttr.addFlashAttribute("msg", "회원 정보가 수정되었습니다.");
+			return "redirect:/mypage";
+		} else {
+			rttr.addFlashAttribute("error", "회원 정보 수정에 실패했습니다.");
+			return "redirect:/mypage/edit";
+		}
 	}
 
 }

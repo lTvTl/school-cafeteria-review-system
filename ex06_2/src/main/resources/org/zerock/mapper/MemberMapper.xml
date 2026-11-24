@@ -46,4 +46,15 @@ WHERE mem.userid = #{userid}
     VALUES (#{userid}, #{auth})
   </insert>
 
+  <!-- 회원 정보 수정 (이름, 선택적 비밀번호) -->
+  <update id="updateMember">
+    UPDATE tbl_member
+    SET username = #{userName},
+        <if test="userpw != null and userpw != ''">
+        userpw = #{userpw},
+        </if>
+        updatedate = SYSDATE
+    WHERE userid = #{userid}
+  </update>
+
 </mapper>

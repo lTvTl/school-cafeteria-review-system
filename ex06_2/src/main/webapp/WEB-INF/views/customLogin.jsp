@@ -61,8 +61,8 @@
 				<h3 class="panel-title"><i class="fa fa-sign-in fa-fw"></i> Please Sign In</h3>
 			</div>
 			<div class="panel-body">
-				<c:if test="${not empty signupMsg}">
-					<div class="alert alert-success" role="alert"><c:out value="${signupMsg}"/></div>
+				<c:if test="${not empty msg}">
+					<div class="alert alert-success" role="alert"><c:out value="${msg}"/></div>
 				</c:if>
 				<c:if test="${not empty error}">
 					<div class="alert alert-danger" role="alert"><c:out value="${error}"/></div>

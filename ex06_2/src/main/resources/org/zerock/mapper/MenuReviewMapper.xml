@@ -4,6 +4,7 @@
     <resultMap id="reviewMap" type="org.zerock.domain.MenuReviewVO">
         <id property="reviewId" column="review_id"/>
         <result property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
         <result property="dietId" column="diet_id"/>
         <result property="userid" column="userid"/>
         <result property="userName" column="user_name"/>
@@ -38,6 +39,14 @@
             FROM tbl_menu_review r JOIN tbl_member m ON m.userid = r.userid
             WHERE r.menu_id = #{menuId} AND r.is_deleted = 0
         ) WHERE rn BETWEEN #{start} AND #{end} ORDER BY rn
+    </select>
+    <select id="getListByUserid" resultMap="reviewMap">
+        SELECT <include refid="reviewColumns"/>, mu.menu_name
+        FROM tbl_menu_review r
+        JOIN tbl_member m ON m.userid = r.userid
+        JOIN tbl_menu mu ON mu.menu_id = r.menu_id
+        WHERE r.userid = #{userid} AND r.is_deleted = 0
+        ORDER BY r.regdate DESC, r.review_id DESC
     </select>
     <select id="read" resultMap="reviewMap">
         SELECT <include refid="reviewColumns"/>

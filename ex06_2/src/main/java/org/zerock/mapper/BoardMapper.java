@@ -84,4 +84,11 @@ public interface BoardMapper {
 	 */
 	public List<BoardAttachVO> findByBno(Long bno);
 
+	/**
+	 * @brief 특정 작성자가 작성한 게시글 목록 조회 (마이페이지용)
+	 * @param writer 작성자 아이디
+	 * @return 게시글 목록
+	 */
+	public List<BoardVO> getListByWriter(String writer);
+
 }

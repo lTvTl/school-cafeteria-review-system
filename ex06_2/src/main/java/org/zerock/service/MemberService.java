@@ -21,4 +21,10 @@ public interface MemberService {
 	// 사용자가 입력한 인증번호 검증
 	public boolean verifySchoolEmailCode(String inputCode, String savedCode);
 
+	// 회원 정보 조회 (마이페이지용)
+	public MemberVO get(String userid);
+
+	// 회원 정보 수정 (이름 및 선택적 비밀번호 변경)
+	public boolean modify(MemberVO member);
+
 }

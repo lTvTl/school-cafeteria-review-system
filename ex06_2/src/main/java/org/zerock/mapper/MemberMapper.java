@@ -17,4 +17,7 @@ public interface MemberMapper {
 	// 회원 권한 등록 (기본 ROLE_USER 등)
 	public int insertAuth(AuthVO auth);
 
+	// 회원 정보 수정 (이름 및 비밀번호)
+	public int updateMember(MemberVO member);
+
 }

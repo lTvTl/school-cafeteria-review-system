@@ -56,4 +56,11 @@ public interface ReplyService {
 	 */
 	public ReplyPageDTO getListPage(Criteria cri, Long bno);
 
+	/**
+	 * @brief 특정 작성자가 작성한 댓글 목록 조회 (마이페이지용)
+	 * @param replyer 댓글 작성자 아이디
+	 * @return 댓글 목록
+	 */
+	public List<ReplyVO> getListByReplyer(String replyer);
+
 }

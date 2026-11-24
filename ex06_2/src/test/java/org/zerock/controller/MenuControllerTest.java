@@ -26,6 +26,7 @@ public class MenuControllerTest {
                 MenuReviewPage p=new MenuReviewPage();p.setMenu(menu);p.setSummary(getSummary(id));p.setReviews(Collections.emptyList());p.setPage(1);p.setTotalPages(1);return p;
             }
             public MenuReviewSummary getSummary(Long id) {MenuReviewSummary s=new MenuReviewSummary();s.setMenuId(id);return s;}
+            public List<MenuReviewVO> getListByUserid(String userid) {return Collections.emptyList();}
             public void register(Long id,Integer score,String text) {if(failure!=null)throw failure;mutations++;}
             public void modify(Long id,Long rid,Integer score,String text) {register(id,score,text);}
             public void remove(Long id,Long rid) {register(id,1,"");}

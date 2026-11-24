@@ -2,6 +2,7 @@ package org.zerock.service;
 
 
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,12 @@ public class MenuReviewServiceImpl implements MenuReviewService {
     public MenuReviewSummary getSummary(Long menuId) {
         requireMenu(menuId);
         return reviews.getSummary(menuId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MenuReviewVO> getListByUserid(String userid) {
+        return reviews.getListByUserid(userid);
     }
 
     @Override

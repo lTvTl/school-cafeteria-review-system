@@ -124,4 +124,11 @@
     update tbl_board set replycnt = replycnt + #{amount} where bno = #{bno}
   </update>  
 
+  <select id="getListByWriter" resultType="org.zerock.domain.BoardVO">
+    select bno, title, content, writer, regdate, updatedate, replycnt
+    from tbl_board
+    where writer = #{writer}
+    order by bno desc
+  </select>
+
 </mapper>

@@ -139,4 +139,12 @@ public class ReplyServiceImpl implements ReplyService {
 		return new ReplyPageDTO(mapper.getCountByBno(bno), mapper.getListWithPaging(cri, bno));
 	}
 
+	@Override
+	public List<ReplyVO> getListByReplyer(String replyer) {
+
+		log.info("get Reply List by replyer: " + replyer);
+
+		return mapper.getListByReplyer(replyer);
+	}
+
 }

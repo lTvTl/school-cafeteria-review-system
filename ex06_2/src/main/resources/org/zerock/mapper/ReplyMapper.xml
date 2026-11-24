@@ -75,5 +75,11 @@ select count(rno) from tbl_reply where bno = #{bno}
 		update tbl_board set replycnt = replycnt + #{amount} where bno = #{bno}
 	</update>
 
+	<select id="getListByReplyer" resultType="org.zerock.domain.ReplyVO">
+		select rno, bno, reply, replyer, replydate, updatedate
+		from tbl_reply
+		where replyer = #{replyer}
+		order by rno desc
+	</select>
 
 </mapper>

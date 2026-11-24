@@ -93,4 +93,19 @@ public class MemberServiceImpl implements MemberService {
 		return savedCode.equals(inputCode.trim());
 	}
 
+	@Override
+	public MemberVO get(String userid) {
+		return memberMapper.read(userid);
+	}
+
+	@Override
+	public boolean modify(MemberVO member) {
+		if (member.getUserpw() != null && !member.getUserpw().trim().isEmpty()) {
+			member.setUserpw(pwencoder.encode(member.getUserpw().trim()));
+		} else {
+			member.setUserpw(null);
+		}
+		return memberMapper.updateMember(member) == 1;
+	}
+
 }
