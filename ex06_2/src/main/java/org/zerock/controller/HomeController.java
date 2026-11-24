@@ -4,6 +4,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.security.Principal;
 import java.util.Collections;
+import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import org.zerock.domain.DailyDietVO;
+import org.zerock.service.SchoolMenuWeek;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,6 +31,8 @@ public class HomeController {
 	private DailyDietService dailyDietService;
 	@Autowired
 	private DailyReviewService dailyReviewService;
+	@Autowired
+	private SchoolMenuWeek schoolMenuWeek;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -50,14 +57,17 @@ public class HomeController {
 	public String main(Principal principal, Model model,
 			@RequestParam(value = "reviewPage", defaultValue = "1") int reviewPage) {
 		String userid = principal == null ? null : principal.getName();
-		model.addAttribute("todayDietList", Collections.emptyList());
-		model.addAttribute("tomorrowDietList", Collections.emptyList());
-		try {
-			model.addAttribute("todayDietList", dailyDietService.getDietList(0, userid));
-			model.addAttribute("tomorrowDietList", dailyDietService.getDietList(1, userid));
-		} catch (DataAccessException e) {
-			logger.error("Could not load cafeteria menus", e);
-			model.addAttribute("menuLoadError", "식단을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+		LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+		schoolMenuWeek.refresh(today);
+		for (int offset = 0; offset < 2; offset++) {
+			List<DailyDietVO> saved = Collections.emptyList();
+			try {
+				saved = dailyDietService.getDietList(offset, userid);
+			} catch (DataAccessException e) {
+				logger.error("Could not load saved cafeteria menus", e);
+				model.addAttribute("menuLoadError", "저장된 식단을 불러오지 못했습니다.");
+			}
+			model.addAttribute(offset == 0 ? "todayDietList" : "tomorrowDietList", saved);
 		}
 		try {
 			model.addAttribute("dailyReviewPage", dailyReviewService.getPage(reviewPage));

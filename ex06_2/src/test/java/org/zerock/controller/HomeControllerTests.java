@@ -25,6 +25,9 @@ public class HomeControllerTests {
                 return Collections.emptyList();
             });
         HomeController controller = new HomeController();
+        ReflectionTestUtils.setField(controller, "schoolMenuWeek", new org.zerock.service.SchoolMenuWeek() {
+            @Override public void refresh(java.time.LocalDate today) {}
+        });
         ReflectionTestUtils.setField(controller, "dailyDietService", service);
         DailyReviewService reviews = (DailyReviewService) Proxy.newProxyInstance(
             getClass().getClassLoader(), new Class<?>[]{DailyReviewService.class}, (proxy, method, args) -> {

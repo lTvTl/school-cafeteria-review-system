@@ -51,3 +51,28 @@
 .cafeteria-main .daily-distribution { margin-bottom: 16px; }
 .cafeteria-main .daily-distribution ul { padding-left: 20px; }
 .cafeteria-main .daily-own-review summary, .cafeteria-main .daily-distribution summary { cursor: pointer; }
+
+.cafeteria-main { max-width: 960px; color: #342e28; }
+.cafeteria-main .menu-grid { gap: 38px; margin: 24px 0 36px; }
+.cafeteria-main .menu-grid .meal-card { margin: 0; border: 0; border-radius: 0; }
+.cafeteria-main .menu-grid summary.card-heading { padding: 8px 34px 20px 0; background: white; border: 0; }
+.cafeteria-main .menu-grid h2 { margin: 0; font-size: 26px; line-height: 1.4; }
+.cafeteria-main .menu-grid .menu-toggle-icon { right: 6px; top: 14px; font-size: 12px; color: #786c62; }
+.cafeteria-main .menu-grid .card-body { padding: 0; }
+.cafeteria-main .meal-slots { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.cafeteria-main .meal-slot { border: 1px solid #eed4b9; border-radius: 10px; overflow: hidden; }
+.cafeteria-main .meal-slot > h3 { margin: 0; padding: 16px 22px; background: #fff3e5; color: #674d37; font-size: 16px; font-weight: 600; }
+.cafeteria-main .meal-slot ul { padding: 18px 22px 22px; }
+.cafeteria-main .meal-slot li { padding: 3px 0; border: 0; line-height: 1.65; }
+.cafeteria-main .meal-slot h4 { margin: 0; color: #66391d; font-size: 15px; font-weight: 700; line-height: 1.6; }
+.cafeteria-main .meal-slot .category-heading { margin: 0 0 9px; padding: 0; }
+.cafeteria-main .meal-slot li + .category-heading { margin-top: 19px; padding-top: 17px; border-top: 1px solid #ece6e0; border-radius: 0; }
+.cafeteria-main .meal-slot h3 .fa { margin-right: 8px; color: #ad530b; }
+.cafeteria-main .meal-slot .dish-link { color: #443c35; font-size: 15px; word-break: keep-all; overflow-wrap: anywhere; }
+.cafeteria-main .dish-link[data-category="MAIN"] { font-weight: 700; color: #a44908; }
+.cafeteria-main .dish-link:hover, .cafeteria-main .dish-link:focus { text-decoration: underline; }
+.cafeteria-main .review-compose { margin-bottom: 20px; }
+@media (max-width: 560px) {
+    .cafeteria-main .meal-slots { grid-template-columns: minmax(0,1fr); gap: 16px; }
+    .cafeteria-main .menu-grid { gap: 28px; }
+}
