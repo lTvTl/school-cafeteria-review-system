@@ -16,7 +16,7 @@
 							content like '%'||#{keyword}||'%'
 						</when>
 						<when test="type == 'W'.toString()">
-							writer like '%'||#{keyword}||'%'
+							(writer like '%'||#{keyword}||'%' or exists (select 1 from tbl_member m where m.userid = tbl_board.writer and m.username like '%'||#{keyword}||'%'))
 						</when>
 					</choose>
 				</trim>
@@ -49,7 +49,9 @@
 	</insert>
 
 	<select id="read" resultType="org.zerock.domain.BoardVO">
-		select bno, title, content, writer, regdate, updatedate, replycnt from tbl_board where bno =
+		select bno, title, content, writer,
+		nvl((select username from tbl_member where userid = tbl_board.writer), writer) as writerName,
+		regdate, updatedate, replycnt from tbl_board where bno =
 		#{bno}
 	</select>
 
@@ -89,7 +91,9 @@
 <select id="getListWithPaging" resultType="org.zerock.domain.BoardVO">
   <![CDATA[
   select 
-    bno, title, content, writer, regdate, updatedate, replycnt
+    bno, title, content, writer,
+    nvl((select username from tbl_member where userid = a.writer), writer) as writerName,
+    regdate, updatedate, replycnt
   from 
       (
       select /*+INDEX_DESC(tbl_board pk_board) */
@@ -103,7 +107,7 @@
       
   <![CDATA[    
       rownum <= #{pageNum} * #{amount}
-      )
+      ) a
   where rn > (#{pageNum} -1) * #{amount}   
   ]]>
   </select>
@@ -130,5 +134,80 @@
     where writer = #{writer}
     order by bno desc
   </select>
+
+  <select id="getDailyReviewListWithPaging" resultType="org.zerock.domain.DailyReviewVO">
+    select
+      daily_review_id as dailyReviewId,
+      serve_date as serveDate,
+      userid,
+      user_name as userName,
+      star_score as starScore,
+      review_text as reviewText,
+      regdate as regDate,
+      updatedate as updateDate,
+      editable
+    from (
+      select
+        row_number() over (order by r.regdate desc, r.daily_review_id desc) as rn,
+        r.daily_review_id,
+        r.serve_date,
+        r.userid,
+        m.username as user_name,
+        r.star_score,
+        r.review_text,
+        r.regdate,
+        r.updatedate,
+        1 as editable
+      from tbl_daily_review r
+      join tbl_member m on m.userid = r.userid
+      where trunc(r.regdate) = trunc(cast(systimestamp at time zone 'Asia/Seoul' as date))
+    )
+    <![CDATA[
+    where rn > (#{pageNum} - 1) * #{amount}
+      and rn <= #{pageNum} * #{amount}
+    ]]>
+    order by rn
+  </select>
+
+  <select id="getDailyReviewTotalCount" resultType="int">
+    select count(*)
+    from tbl_daily_review r
+    join tbl_member m on m.userid = r.userid
+    where trunc(r.regdate) = trunc(cast(systimestamp at time zone 'Asia/Seoul' as date))
+  </select>
+
+  <select id="readDailyReview" resultType="org.zerock.domain.DailyReviewVO">
+    select
+      r.daily_review_id as dailyReviewId,
+      r.serve_date as serveDate,
+      r.userid,
+      m.username as userName,
+      r.star_score as starScore,
+      r.review_text as reviewText,
+      r.regdate as regDate,
+      r.updatedate as updateDate,
+      case
+        when trunc(r.regdate) = trunc(cast(systimestamp at time zone 'Asia/Seoul' as date)) then 1
+        else 0
+      end as editable
+    from tbl_daily_review r
+    join tbl_member m on m.userid = r.userid
+    where r.daily_review_id = #{dailyReviewId}
+  </select>
+
+  <update id="updateDailyReview">
+    update tbl_daily_review
+    set star_score = #{starScore},
+        review_text = #{reviewText},
+        updatedate = cast(systimestamp at time zone 'Asia/Seoul' as date)
+    where daily_review_id = #{dailyReviewId}
+      and userid = #{userid}
+      and trunc(regdate) = trunc(cast(systimestamp at time zone 'Asia/Seoul' as date))
+  </update>
+
+  <delete id="deleteDailyReview">
+    delete from tbl_daily_review
+    where daily_review_id = #{dailyReviewId}
+  </delete>
 
 </mapper>

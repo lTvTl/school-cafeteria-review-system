@@ -86,13 +86,15 @@
           </div>
            -->
           <div class="form-group">
-            <label>작성자</label> <input class="form-control" name='writer' 
-                value='<sec:authentication property="principal.username"/>' readonly="readonly">
+            <label>작성자</label>
+            <input class="form-control" value='<sec:authentication property="principal.member.userName"/>' readonly="readonly">
+            <input type="hidden" name='writer' value='<sec:authentication property="principal.username"/>'>
           </div>
           
           
-          <button type="submit" class="btn btn-default">등록</button>
+          <button type="submit" class="btn btn-primary">등록</button>
           <button type="reset" class="btn btn-default">초기화</button>
+          <button type="button" class="btn btn-info" onclick="location.href='/board/list'">목록</button>
         </form>
 
       </div>
@@ -312,7 +314,7 @@ $(document).ready(function(e){
       dataType:'text',
       type: 'POST',
         success: function(result){
-           alert(result);
+           alert(result === "deleted" ? "첨부파일이 삭제되었습니다." : result);
            
            targetLi.remove();
          }

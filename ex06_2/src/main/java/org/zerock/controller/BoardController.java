@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.domain.BoardAttachVO;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.DailyReviewVO;
 import org.zerock.domain.PageDTO;
 import org.zerock.service.BoardService;
 
@@ -207,6 +208,82 @@ public class BoardController {
 
 		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
 
+	}
+
+	/**
+	 * @brief 게시판 내 학식 리뷰 확인 목록 화면을 조회한다.
+	 * @param cri 페이징 및 검색 조건
+	 * @param model 뷰 데이터 모델
+	 */
+	@GetMapping("/reviews")
+	public void reviews(Criteria cri, Model model) {
+
+		log.info("daily reviews list: " + cri);
+		model.addAttribute("reviewList", service.getDailyReviewList(cri));
+
+		int total = service.getDailyReviewTotal(cri);
+		model.addAttribute("pageMaker", new PageDTO(cri, total));
+	}
+
+	/**
+	 * @brief 당일 작성한 본인의 학식 리뷰를 수정한다. (작성일이 오늘 SYSDATE 와 같고 본인일 때만 가능)
+	 * @param review 수정할 학식 리뷰 정보 (dailyReviewId, userid, starScore, reviewText)
+	 * @param cri 페이징 및 검색 조건
+	 * @param rttr 리다이렉트 알림 메시지 전달 객체
+	 * @return 학식 리뷰 확인 목록 리다이렉트 경로
+	 */
+	@PreAuthorize("isAuthenticated() and principal.username == #review.userid")
+	@PostMapping("/reviews/modify")
+	public String modifyDailyReview(DailyReviewVO review, Criteria cri, RedirectAttributes rttr) {
+
+		log.info("modify daily review: " + review);
+
+		String text = review.getReviewText() == null ? "" : review.getReviewText().trim();
+		Integer star = review.getStarScore();
+
+		if (star == null || star < 1 || star > 5 || text.isEmpty() || text.length() > 1000) {
+			rttr.addFlashAttribute("reviewMsg", "별점(1~5점)과 리뷰 내용(1~1,000자)을 올바르게 입력해 주세요.");
+			return "redirect:/board/reviews" + cri.getListLink();
+		}
+
+		DailyReviewVO current = service.getDailyReview(review.getDailyReviewId());
+		if (current == null || !current.isEditable()) {
+			rttr.addFlashAttribute("reviewMsg", "작성일이 오늘인 리뷰만 수정할 수 있습니다. (이전 날짜 리뷰는 삭제만 가능)");
+			return "redirect:/board/reviews" + cri.getListLink();
+		}
+
+		review.setReviewText(text);
+		if (service.modifyDailyReview(review)) {
+			rttr.addFlashAttribute("reviewMsg", "학식 리뷰가 수정되었습니다.");
+		} else {
+			rttr.addFlashAttribute("reviewMsg", "리뷰를 수정하지 못했습니다. 당일 작성한 본인 리뷰인지 확인해 주세요.");
+		}
+
+		return "redirect:/board/reviews" + cri.getListLink();
+	}
+
+	/**
+	 * @brief 학식 리뷰를 삭제한다. (이전 날짜 리뷰도 본인이거나 관리자 ROLE_ADMIN 이면 삭제 가능)
+	 * @param dailyReviewId 삭제할 학식 리뷰 번호
+	 * @param userid 리뷰 작성자 아이디
+	 * @param cri 페이징 및 검색 조건
+	 * @param rttr 리다이렉트 알림 메시지 전달 객체
+	 * @return 학식 리뷰 확인 목록 리다이렉트 경로
+	 */
+	@PreAuthorize("isAuthenticated() and (principal.username == #userid or hasRole('ROLE_ADMIN'))")
+	@PostMapping("/reviews/remove")
+	public String removeDailyReview(@RequestParam("dailyReviewId") Long dailyReviewId,
+			@RequestParam("userid") String userid, Criteria cri, RedirectAttributes rttr) {
+
+		log.info("remove daily review: " + dailyReviewId + ", userid: " + userid);
+
+		if (service.removeDailyReview(dailyReviewId)) {
+			rttr.addFlashAttribute("reviewMsg", "학식 리뷰가 삭제되었습니다.");
+		} else {
+			rttr.addFlashAttribute("reviewMsg", "이미 삭제되었거나 존재하지 않는 리뷰입니다.");
+		}
+
+		return "redirect:/board/reviews" + cri.getListLink();
 	}
 
 }

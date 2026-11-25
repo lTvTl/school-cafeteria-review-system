@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zerock.domain.BoardAttachVO;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.DailyReviewVO;
 import org.zerock.mapper.BoardAttachMapper;
 import org.zerock.mapper.BoardMapper;
 import org.zerock.mapper.ReplyMapper;
@@ -197,6 +198,73 @@ public class BoardServiceImpl implements BoardService {
 		log.info("get board list by writer: " + writer);
 
 		return mapper.getListByWriter(writer);
+	}
+
+	/**
+	 * @brief 페이징 및 검색 조건에 맞는 학식 리뷰 목록을 조회한다.
+	 * @param cri 페이징 및 검색 조건
+	 * @return 학식 리뷰 목록
+	 */
+	@Override
+	public List<DailyReviewVO> getDailyReviewList(Criteria cri) {
+
+		log.info("get daily review list with criteria: " + cri);
+
+		return mapper.getDailyReviewListWithPaging(cri);
+	}
+
+	/**
+	 * @brief 검색 조건에 맞는 전체 학식 리뷰 개수를 조회한다.
+	 * @param cri 검색 조건
+	 * @return 학식 리뷰 총 개수
+	 */
+	@Override
+	public int getDailyReviewTotal(Criteria cri) {
+
+		log.info("get daily review total count");
+
+		return mapper.getDailyReviewTotalCount(cri);
+	}
+
+	/**
+	 * @brief 특정 학식 리뷰를 단건 조회한다.
+	 * @param dailyReviewId 학식 리뷰 번호
+	 * @return 학식 리뷰 VO
+	 */
+	@Override
+	public DailyReviewVO getDailyReview(Long dailyReviewId) {
+
+		log.info("get daily review: " + dailyReviewId);
+
+		return mapper.readDailyReview(dailyReviewId);
+	}
+
+	/**
+	 * @brief 당일 작성한 본인의 학식 리뷰를 수정한다.
+	 * @param review 수정할 학식 리뷰 정보
+	 * @return 수정 성공 여부
+	 */
+	@Transactional
+	@Override
+	public boolean modifyDailyReview(DailyReviewVO review) {
+
+		log.info("modify daily review: " + review);
+
+		return mapper.updateDailyReview(review) == 1;
+	}
+
+	/**
+	 * @brief 학식 리뷰를 삭제한다. (이전 날짜 리뷰도 삭제 가능)
+	 * @param dailyReviewId 삭제할 학식 리뷰 번호
+	 * @return 삭제 성공 여부
+	 */
+	@Transactional
+	@Override
+	public boolean removeDailyReview(Long dailyReviewId) {
+
+		log.info("remove daily review: " + dailyReviewId);
+
+		return mapper.deleteDailyReview(dailyReviewId) == 1;
 	}
 
 }

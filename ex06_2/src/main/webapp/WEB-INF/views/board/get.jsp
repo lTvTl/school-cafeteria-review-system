@@ -41,8 +41,9 @@
         </div>
 
         <div class="form-group">
-          <label>작성자</label> <input class="form-control" name='writer'
-            value='<c:out value="${board.writer }"/>' readonly="readonly">
+          <label>작성자</label>
+          <input class="form-control" value='<c:out value="${not empty board.writerName ? board.writerName : board.writer}"/>' readonly="readonly">
+          <input type="hidden" name='writer' value='<c:out value="${board.writer }"/>'>
         </div>
 
 <%-- 		<button data-oper='modify' class="btn btn-default">
@@ -188,7 +189,7 @@
       </div>      -->
       
       <div class="panel-heading">
-        <i class="fa fa-comments fa-fw"></i> 댓글
+        <i class="fa fa-comments fa-fw"></i> 댓글 <span id="replyCntBadge" class="badge">0</span>
       </div>      
        
       <!-- /.panel-heading -->
@@ -198,7 +199,7 @@
           <div class="row">
             <div class="col-sm-2">
               <input type="text" id="inlineReplyer" class="form-control" 
-                value="<sec:authentication property='principal.username'/>" readonly="readonly">
+                value="<sec:authentication property='principal.member.userName'/>" readonly="readonly">
             </div>
             <div class="col-sm-8">
               <input type="text" id="inlineReply" class="form-control" placeholder="댓글 내용을 입력하세요.">
@@ -294,18 +295,20 @@ $(document).ready(function () {
           return;
         }
           
+         $("#replyCntBadge").text(replyCnt || 0);
          var str="";
          
          if(list == null || list.length == 0){
-           replyUL.html("");
+           replyUL.html("<li class='text-center text-muted' style='padding: 20px 0; list-style: none;'>등록된 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</li>");
            replyPageFooter.html("");
            return;
          }
          
          for (var i = 0, len = list.length || 0; i < len; i++) {
+           var displayReplyer = list[i].replyerName ? list[i].replyerName : list[i].replyer;
            str +="<li class='left clearfix' data-rno='"+list[i].rno+"'>";
            str +="  <div><div class='header'><strong class='primary-font'>"
-        	   +list[i].replyer+"</strong>"; 
+        	   +displayReplyer+"</strong>"; 
            str +="    <small class='pull-right text-muted'>"
                +replyService.displayTime(list[i].replyDate)+"</small></div>";
            str +="    <p>"+list[i].reply+"</p></div></li>";
@@ -421,7 +424,7 @@ $(document).ready(function () {
         bno: bnoValue
       };
       replyService.add(reply, function(result){
-        alert(result);
+        alert(result === "success" ? "댓글이 등록되었습니다." : result);
         $("#inlineReply").val("");
         showList(-1);
       });
@@ -452,7 +455,7 @@ $(document).ready(function () {
           };
       replyService.add(reply, function(result){
         
-        alert(result);
+        alert(result === "success" ? "댓글이 등록되었습니다." : result);
         
         modal.find("input").val("");
         modal.modal("hide");
@@ -469,11 +472,15 @@ $(document).ready(function () {
     $(".chat").on("click", "li", function(e){
       
       var rno = $(this).data("rno");
+      if(!rno){
+        return;
+      }
       
       replyService.get(rno, function(reply){
       
         modalInputReply.val(reply.reply);
-        modalInputReplyer.val(reply.replyer).attr("readonly","readonly");
+        modalInputReplyer.val(reply.replyerName ? reply.replyerName : reply.replyer).attr("readonly","readonly");
+        modal.data("replyer", reply.replyer);
         modalInputReplyDate.closest("div").show();
         modalInputReplyDate.val(replyService.displayTime( reply.replyDate))
         .attr("readonly","readonly");
@@ -495,7 +502,7 @@ $(document).ready(function () {
     
 modalModBtn.on("click", function(e){
 	
-	var originalReplyer = modalInputReplyer.val();
+	var originalReplyer = modal.data("replyer") || modalInputReplyer.val();
 	var replyText = $.trim(modalInputReply.val());
 	
 	if(!replyText){
@@ -527,7 +534,7 @@ modalModBtn.on("click", function(e){
 	  
 	replyService.update(reply, function(result){
 	      
-	  alert(result);
+	  alert(result === "success" ? "댓글이 수정되었습니다." : result);
 	  modal.modal("hide");
 	  showList(pageNum);
 	  
@@ -548,7 +555,7 @@ modalModBtn.on("click", function(e){
    		  return;
    	  }
    	  
-   	  var originalReplyer = modalInputReplyer.val();
+   	  var originalReplyer = modal.data("replyer") || modalInputReplyer.val();
    	  
    	  console.log("Original Replyer: " + originalReplyer);
    	  
@@ -563,7 +570,7 @@ modalModBtn.on("click", function(e){
    	  
    	  replyService.remove(rno, originalReplyer, function(result){
    	        
-   	      alert(result);
+   	      alert(result === "success" ? "댓글이 삭제되었습니다." : result);
    	      modal.modal("hide");
    	      showList(pageNum);
    	      
@@ -695,6 +702,11 @@ $(document).ready(function(){
     $.getJSON("/board/getAttachList", {bno: bno}, function(arr){
         
        console.log(arr);
+       
+       if(!arr || arr.length === 0){
+         $(".uploadResult").css("background-color", "transparent").html("<p class='text-center text-muted' style='margin: 10px 0;'>등록된 첨부파일이 없습니다.</p>");
+         return;
+       }
        
        var str = "";
        

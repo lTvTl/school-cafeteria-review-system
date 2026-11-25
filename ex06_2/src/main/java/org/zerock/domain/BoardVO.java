@@ -29,6 +29,9 @@ public class BoardVO {
 	 */
 	private String writer; // TODO: [통합] 세션 유저 정보로 변경
 
+	/** @brief 작성자 이름 (tbl_member.username 조인 표시용) */
+	private String writerName;
+
 	/** @brief 게시글 작성일 */
 	private Date regdate;
 

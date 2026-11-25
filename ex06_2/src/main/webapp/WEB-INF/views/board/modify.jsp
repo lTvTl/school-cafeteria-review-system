@@ -50,8 +50,8 @@
 
 <div class="form-group">
   <label>작성자</label> 
-  <input class="form-control" name='writer'
-    value='<c:out value="${board.writer}"/>' readonly="readonly">            
+  <input class="form-control" value='<c:out value="${not empty board.writerName ? board.writerName : board.writer}"/>' readonly="readonly">
+  <input type="hidden" name='writer' value='<c:out value="${board.writer}"/>'>            
 </div>
 
 <div class="form-group">

@@ -26,6 +26,9 @@ public class ReplyVO {
 	 */
 	private String replyer; // TODO: [통합] 세션 유저 정보로 변경
 
+	/** @brief 댓글 작성자 이름 (tbl_member.username 조인 표시용) */
+	private String replyerName;
+
 	/** @brief 댓글 작성일 */
 	private Date replyDate;
 

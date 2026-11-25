@@ -263,7 +263,16 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="${pageContext.request.contextPath}/board/list"><i class="fa fa-table fa-fw"></i> 게시판</a>
+                            <a href="#"><i class="fa fa-table fa-fw"></i> 게시판<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/board/list">자유게시판</a>
+                                </li>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/board/reviews">학식 리뷰 확인</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
                         <sec:authorize access="isAuthenticated()">
                         <li>

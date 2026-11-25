@@ -7,7 +7,7 @@
 <%@include file="../includes/header.jsp"%>
 <div class="row">
 	<div class="col-lg-12">
-		<h1 class="page-header">커뮤니티 게시판</h1>
+		<h1 class="page-header">자유게시판</h1>
 	</div>
 	<!-- /.col-lg-12 -->
 </div>
@@ -16,9 +16,11 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
-			<div class="panel-heading">
-				게시글 목록
-				<button id='regBtn' type="button" class="btn btn-xs pull-right">글쓰기</button>
+			<div class="panel-heading" style="display: flex; align-items: center; justify-content: space-between;">
+				<span><i class="fa fa-list-alt" style="color: #FF7A00;"></i> 게시글 목록</span>
+				<button id='regBtn' type="button" class="btn btn-sm btn-primary" style="background-color: #FF7A00; border-color: #E65C00; font-weight: bold;">
+					<i class="fa fa-pencil"></i> 글쓰기
+				</button>
 			</div>
 
 			<!-- /.panel-heading -->
@@ -49,7 +51,7 @@
                   <c:out value="${board.title}" />   <b>[  <c:out value="${board.replyCnt}" />  ]</b>
                   </a>
                </td>
-              <td class="text-center"><c:out value="${board.writer}" /></td>
+              <td class="text-center"><c:out value="${not empty board.writerName ? board.writerName : board.writer}" /></td>
               <td class="text-center"><fmt:formatDate pattern="yyyy-MM-dd"
                   value="${board.regdate}" /></td>
               <td class="text-center"><fmt:formatDate pattern="yyyy-MM-dd"

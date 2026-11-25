@@ -5,6 +5,7 @@ import java.util.List;
 import org.zerock.domain.BoardAttachVO;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.DailyReviewVO;
 
 /**
  * @file BoardService.java
@@ -74,5 +75,40 @@ public interface BoardService {
 	 * @return 게시글 목록
 	 */
 	public List<BoardVO> getListByWriter(String writer);
+
+	/**
+	 * @brief 게시판 내 학식 리뷰 확인 목록 조회 (페이징 및 검색 포함)
+	 * @param cri 페이징 및 검색 조건
+	 * @return 학식 리뷰 목록
+	 */
+	public List<DailyReviewVO> getDailyReviewList(Criteria cri);
+
+	/**
+	 * @brief 검색 조건에 해당하는 전체 학식 리뷰 개수 조회
+	 * @param cri 검색 조건
+	 * @return 학식 리뷰 총 개수
+	 */
+	public int getDailyReviewTotal(Criteria cri);
+
+	/**
+	 * @brief 특정 학식 리뷰 단건 조회
+	 * @param dailyReviewId 학식 리뷰 번호
+	 * @return 학식 리뷰 정보
+	 */
+	public DailyReviewVO getDailyReview(Long dailyReviewId);
+
+	/**
+	 * @brief 당일 작성한 본인의 학식 리뷰 수정 (작성일이 오늘 SYSDATE 와 같을 때만 가능)
+	 * @param review 수정할 학식 리뷰 정보
+	 * @return 수정 성공 여부
+	 */
+	public boolean modifyDailyReview(DailyReviewVO review);
+
+	/**
+	 * @brief 학식 리뷰 삭제 (이전 날짜 리뷰도 본인 또는 관리자는 삭제 가능)
+	 * @param dailyReviewId 삭제할 학식 리뷰 번호
+	 * @return 삭제 성공 여부
+	 */
+	public boolean removeDailyReview(Long dailyReviewId);
 
 }

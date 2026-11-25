@@ -13,7 +13,9 @@
 
 	<select id="read" resultType="org.zerock.domain.ReplyVO">
 
-		select rno, bno, reply, replyer, replydate, updatedate from tbl_reply where rno =
+		select rno, bno, reply, replyer,
+		nvl((select username from tbl_member where userid = tbl_reply.replyer), replyer) as replyerName,
+		replydate, updatedate from tbl_reply where rno =
 		#{rno}
 
 	</select>
@@ -42,7 +44,9 @@
 		resultType="org.zerock.domain.ReplyVO">
 
   <![CDATA[
- select  rno, bno, reply, replyer, replydate, updatedate
+ select  rno, bno, reply, replyer,
+         nvl((select username from tbl_member where userid = a.replyer), replyer) as replyerName,
+         replydate, updatedate
  from 
    (
     select /*+INDEX(tbl_reply idx_reply) */ 
@@ -51,7 +55,7 @@
     where bno =  #{bno}
     and rno > 0
     and rownum <= #{cri.pageNum} * #{cri.amount}
-   ) where rn > (#{cri.pageNum} -1) * #{cri.amount}
+   ) a where rn > (#{cri.pageNum} -1) * #{cri.amount}
 ]]>
 
 	</select>
@@ -64,7 +68,9 @@ select count(rno) from tbl_reply where bno = #{bno}
 	</select>
 
 	<select id="getList" resultType="org.zerock.domain.ReplyVO">
-		select rno, bno, reply, replyer, replydate, updatedate from tbl_reply where bno = #{bno} order by rno asc
+		select rno, bno, reply, replyer,
+		nvl((select username from tbl_member where userid = tbl_reply.replyer), replyer) as replyerName,
+		replydate, updatedate from tbl_reply where bno = #{bno} order by rno asc
 	</select>
 
 	<delete id="deleteAll">
