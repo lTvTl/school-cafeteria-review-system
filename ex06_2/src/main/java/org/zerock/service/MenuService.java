@@ -15,4 +15,6 @@ public interface MenuService {
 	public MenuVO get(Long menuId);
 
 	public int getCountByCategory(String category);
+
+	public List<MenuVO> getBookmarkedListByUserid(String userid);
 }

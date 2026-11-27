@@ -19,6 +19,7 @@ import org.zerock.security.domain.CustomUser;
 import org.zerock.service.BoardService;
 import org.zerock.service.MemberService;
 import org.zerock.service.MenuReviewService;
+import org.zerock.service.MenuService;
 import org.zerock.service.ReplyService;
 
 import lombok.Setter;
@@ -39,6 +40,9 @@ public class MemberController {
 
 	@Setter(onMethod_ = @Autowired)
 	private MenuReviewService menuReviewService;
+
+	@Setter(onMethod_ = @Autowired)
+	private MenuService menuService;
 
 	@Setter(onMethod_ = @Autowired)
 	private BoardService boardService;
@@ -158,7 +162,7 @@ public class MemberController {
 
 	/**
 	 * 마이페이지 조회 (GET /mypage)
-	 * - 내 정보, 내가 작성한 메뉴 리뷰(myReviewList), 게시글(myBoardList), 댓글(myReplyList) 조회
+	 * - 내 정보, 북마크한 선호 메뉴(myBookmarkList), 내가 작성한 메뉴 리뷰(myReviewList), 게시글(myBoardList), 댓글(myReplyList) 조회
 	 */
 	@GetMapping("/mypage")
 	public String mypage(Principal principal, Model model) {
@@ -168,10 +172,16 @@ public class MemberController {
 		String userid = principal.getName();
 
 		model.addAttribute("member", memberService.get(userid));
+		model.addAttribute("myBookmarkList", Collections.emptyList());
 		model.addAttribute("myReviewList", Collections.emptyList());
 		model.addAttribute("myBoardList", Collections.emptyList());
 		model.addAttribute("myReplyList", Collections.emptyList());
 
+		try {
+			model.addAttribute("myBookmarkList", menuService.getBookmarkedListByUserid(userid));
+		} catch (Exception e) {
+			log.error("마이페이지 북마크 목록 조회 실패: " + e.getMessage(), e);
+		}
 		try {
 			model.addAttribute("myReviewList", menuReviewService.getListByUserid(userid));
 		} catch (Exception e) {

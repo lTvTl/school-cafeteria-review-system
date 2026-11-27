@@ -42,4 +42,14 @@ public class StubMenuMapper implements MenuMapper {
 	public int getCountByCategory(String category) {
 		return getListByCategory(category, null).size();
 	}
+
+	@Override
+	public List<MenuVO> getBookmarkedListByUserid(String userid) {
+		calls++;
+		lastUserid = userid;
+		if (failure != null) {
+			throw failure;
+		}
+		return rows.stream().filter(MenuVO::isBookmarked).collect(Collectors.toList());
+	}
 }

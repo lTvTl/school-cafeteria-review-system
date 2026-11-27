@@ -43,4 +43,15 @@
 		select count(*) from tbl_menu
 		where category = #{category, jdbcType=VARCHAR}
 	</select>
+
+	<select id="getBookmarkedListByUserid" resultMap="menuResultMap">
+		select m.menu_id, m.menu_name, m.category, m.avg_rating,
+			(select count(*) from tbl_bookmark b2 where b2.menu_id = m.menu_id) as bookmark_cnt,
+			1 as bookmarked,
+			b.regdate as regdate
+		from tbl_bookmark b
+		join tbl_menu m on m.menu_id = b.menu_id
+		where b.userid = #{userid, jdbcType=VARCHAR}
+		order by b.regdate desc, b.bookmark_id desc
+	</select>
 </mapper>

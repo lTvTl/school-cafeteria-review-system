@@ -14,4 +14,6 @@ public interface MenuMapper {
 	public MenuVO read(@Param("menuId") Long menuId);
 
 	public int getCountByCategory(@Param("category") String category);
+
+	public List<MenuVO> getBookmarkedListByUserid(@Param("userid") String userid);
 }

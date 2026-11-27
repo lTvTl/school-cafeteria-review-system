@@ -58,4 +58,28 @@ public class MenuServiceTest {
 		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("alice","unused",java.util.Collections.emptyList()));
 		service.getListByCategory("SIDE"); assertEquals("alice",mapper.lastUserid); assertEquals(2,mapper.calls);
 	}
+
+	@Test
+	public void bookmarkedListReturnsEmptyForBlankUseridAndQueriesTrimmedUserid() {
+		assertTrue(service.getBookmarkedListByUserid(null).isEmpty());
+		assertTrue(service.getBookmarkedListByUserid("   ").isEmpty());
+		assertEquals(0, mapper.calls);
+
+		MenuVO bookmarked = new MenuVO();
+		bookmarked.setMenuId(10L);
+		bookmarked.setMenuName("돈까스");
+		bookmarked.setBookmarked(true);
+		MenuVO unbookmarked = new MenuVO();
+		unbookmarked.setMenuId(11L);
+		unbookmarked.setMenuName("김치찌개");
+		unbookmarked.setBookmarked(false);
+		mapper.rows.add(bookmarked);
+		mapper.rows.add(unbookmarked);
+
+		java.util.List<MenuVO> result = service.getBookmarkedListByUserid(" alice ");
+		assertEquals(1, result.size());
+		assertEquals(Long.valueOf(10L), result.get(0).getMenuId());
+		assertEquals("alice", mapper.lastUserid);
+		assertEquals(1, mapper.calls);
+	}
 }

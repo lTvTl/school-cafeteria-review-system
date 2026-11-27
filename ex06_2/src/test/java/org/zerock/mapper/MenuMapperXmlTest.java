@@ -66,4 +66,20 @@ public class MenuMapperXmlTest {
 		assertTrue(detail.getSql().contains("where menu_id = ?"));
 		assertEquals("menuId", detail.getParameterMappings().get(0).getProperty());
 	}
+
+	@Test
+	public void bookmarkedListQueryBindsUseridAndJoinsMenusInRecentOrder() {
+		Map<String, Object> params = new HashMap<>();
+		String injection = "alice' OR 1=1--";
+		params.put("userid", injection);
+		BoundSql bound = configuration.getMappedStatement(PREFIX + "getBookmarkedListByUserid").getBoundSql(params);
+		String sql = bound.getSql().replaceAll("\\s+", " ").trim();
+		assertTrue(sql.contains("from tbl_bookmark b"));
+		assertTrue(sql.contains("join tbl_menu m on m.menu_id = b.menu_id"));
+		assertTrue(sql.contains("where b.userid = ?"));
+		assertTrue(sql.contains("order by b.regdate desc, b.bookmark_id desc"));
+		assertFalse(sql.contains(injection));
+		assertEquals(1, bound.getParameterMappings().size());
+		assertEquals("userid", bound.getParameterMappings().get(0).getProperty());
+	}
 }

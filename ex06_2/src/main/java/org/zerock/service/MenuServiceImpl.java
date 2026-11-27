@@ -1,5 +1,6 @@
 package org.zerock.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,13 @@ public class MenuServiceImpl implements MenuService {
 	public int getCountByCategory(String category) {
 		MenuCategory.fromCode(category);
 		return mapper.getCountByCategory(category);
+	}
+
+	@Override
+	public List<MenuVO> getBookmarkedListByUserid(String userid) {
+		if (userid == null || userid.trim().isEmpty()) {
+			return Collections.emptyList();
+		}
+		return mapper.getBookmarkedListByUserid(userid.trim());
 	}
 }
