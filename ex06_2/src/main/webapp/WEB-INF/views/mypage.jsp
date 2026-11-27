@@ -144,80 +144,7 @@
 	</div>
 </div>
 
-<!-- 2. 내가 북마크한 선호 메뉴 -->
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-default mypage-panel" id="mypageBookmarkSection"
-			data-csrf-header="<c:out value='${_csrf.headerName}'/>"
-			data-csrf-token="<c:out value='${_csrf.token}'/>">
-			<div class="panel-heading clearfix">
-				<span class="pull-left" style="padding-top: 5px;">
-					<i class="fa fa-heart fa-fw bookmark-heart-icon"></i> 내가 북마크한 선호 메뉴
-				</span>
-				<a href="${pageContext.request.contextPath}/category" class="btn btn-sm btn-default pull-right">
-					<i class="fa fa-cutlery fa-fw"></i> 메뉴 보러가기
-				</a>
-			</div>
-			<div class="panel-body">
-				<div class="mypage-category-buttons" role="group" aria-label="선호 메뉴 카테고리 선택">
-					<button type="button" class="btn btn-primary btn-bookmark-category" data-category="ALL" aria-pressed="true">전체</button>
-					<button type="button" class="btn btn-default btn-bookmark-category" data-category="MAIN" aria-pressed="false">메인메뉴</button>
-					<button type="button" class="btn btn-default btn-bookmark-category" data-category="SIDE" aria-pressed="false">반찬</button>
-					<button type="button" class="btn btn-default btn-bookmark-category" data-category="DESSERT" aria-pressed="false">디저트</button>
-					<button type="button" class="btn btn-default btn-bookmark-category" data-category="DRINK" aria-pressed="false">음료</button>
-					<button type="button" class="btn btn-default btn-bookmark-category" data-category="ETC" aria-pressed="false">기타</button>
-				</div>
-				<div id="mypageBookmarkFeedback" class="alert mypage-bookmark-feedback" role="status" aria-live="polite" style="display: none;"></div>
-				<p class="text-muted" id="mypageBookmarkEmpty" style="${empty myBookmarkList ? '' : 'display: none;'}">
-					북마크한 선호 메뉴가 없습니다. <a href="${pageContext.request.contextPath}/category">음식 카테고리</a>에서 마음에 드는 메뉴에 하트를 눌러보세요.
-				</p>
-				<p class="text-muted" id="mypageBookmarkCategoryEmpty" style="display: none;">
-					해당 카테고리에 북마크한 선호 메뉴가 없습니다.
-				</p>
-				<c:if test="${not empty myBookmarkList}">
-					<div class="table-responsive" id="mypageBookmarkTableWrap">
-						<table class="table table-striped table-bordered table-hover" style="margin-bottom: 0;">
-							<thead>
-								<tr>
-									<th>메뉴명</th>
-									<th style="width: 22%;">평균 별점</th>
-									<th style="width: 14%; text-align: center;">북마크</th>
-								</tr>
-							</thead>
-							<tbody id="mypageBookmarkTbody">
-								<c:forEach items="${myBookmarkList}" var="menu">
-									<c:url var="bookmarkRemoveUrl" value="/menu/${menu.menuId}/bookmark/remove"/>
-									<tr data-menu-id="${menu.menuId}" data-category="<c:out value='${menu.category}'/>">
-										<td style="vertical-align: middle;">
-											<a href="${pageContext.request.contextPath}/menu/${menu.menuId}">
-												<c:out value="${menu.menuName}"/>
-											</a>
-										</td>
-										<td class="star-badge" style="vertical-align: middle;">
-											&#9733; <fmt:formatNumber value="${menu.avgRating}" pattern="0.00"/> / 5
-										</td>
-										<td style="text-align: center; vertical-align: middle;">
-											<button type="button" class="mypage-bookmark-btn btn-remove-bookmark"
-												data-menu-id="${menu.menuId}"
-												data-menu-name="<c:out value='${menu.menuName}'/>"
-												data-remove-url="<c:out value='${bookmarkRemoveUrl}'/>"
-												aria-pressed="true"
-												aria-label="<c:out value='${menu.menuName}'/> 북마크 해제">
-												<i class="fa fa-heart" aria-hidden="true"></i>
-											</button>
-										</td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-					</div>
-				</c:if>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- 3. 내가 작성한 활동 내역 (메뉴 리뷰 / 게시글 / 댓글) -->
+<!-- 2. 내가 작성한 활동 내역 (메뉴 리뷰 / 게시글 / 댓글) -->
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default mypage-panel">
@@ -353,6 +280,79 @@
 						</c:choose>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 3. 내가 북마크한 선호 메뉴 -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default mypage-panel" id="mypageBookmarkSection"
+			data-csrf-header="<c:out value='${_csrf.headerName}'/>"
+			data-csrf-token="<c:out value='${_csrf.token}'/>">
+			<div class="panel-heading clearfix">
+				<span class="pull-left" style="padding-top: 5px;">
+					<i class="fa fa-heart fa-fw bookmark-heart-icon"></i> 내가 북마크한 선호 메뉴
+				</span>
+				<a href="${pageContext.request.contextPath}/category" class="btn btn-sm btn-default pull-right">
+					<i class="fa fa-cutlery fa-fw"></i> 메뉴 보러가기
+				</a>
+			</div>
+			<div class="panel-body">
+				<div class="mypage-category-buttons" role="group" aria-label="선호 메뉴 카테고리 선택">
+					<button type="button" class="btn btn-primary btn-bookmark-category" data-category="ALL" aria-pressed="true">전체</button>
+					<button type="button" class="btn btn-default btn-bookmark-category" data-category="MAIN" aria-pressed="false">메인메뉴</button>
+					<button type="button" class="btn btn-default btn-bookmark-category" data-category="SIDE" aria-pressed="false">반찬</button>
+					<button type="button" class="btn btn-default btn-bookmark-category" data-category="DESSERT" aria-pressed="false">디저트</button>
+					<button type="button" class="btn btn-default btn-bookmark-category" data-category="DRINK" aria-pressed="false">음료</button>
+					<button type="button" class="btn btn-default btn-bookmark-category" data-category="ETC" aria-pressed="false">기타</button>
+				</div>
+				<div id="mypageBookmarkFeedback" class="alert mypage-bookmark-feedback" role="status" aria-live="polite" style="display: none;"></div>
+				<p class="text-muted" id="mypageBookmarkEmpty" style="${empty myBookmarkList ? '' : 'display: none;'}">
+					북마크한 선호 메뉴가 없습니다. <a href="${pageContext.request.contextPath}/category">음식 카테고리</a>에서 마음에 드는 메뉴에 하트를 눌러보세요.
+				</p>
+				<p class="text-muted" id="mypageBookmarkCategoryEmpty" style="display: none;">
+					해당 카테고리에 북마크한 선호 메뉴가 없습니다.
+				</p>
+				<c:if test="${not empty myBookmarkList}">
+					<div class="table-responsive" id="mypageBookmarkTableWrap">
+						<table class="table table-striped table-bordered table-hover" style="margin-bottom: 0;">
+							<thead>
+								<tr>
+									<th>메뉴명</th>
+									<th style="width: 22%;">평균 별점</th>
+									<th style="width: 14%; text-align: center;">북마크</th>
+								</tr>
+							</thead>
+							<tbody id="mypageBookmarkTbody">
+								<c:forEach items="${myBookmarkList}" var="menu">
+									<c:url var="bookmarkRemoveUrl" value="/menu/${menu.menuId}/bookmark/remove"/>
+									<tr data-menu-id="${menu.menuId}" data-category="<c:out value='${menu.category}'/>">
+										<td style="vertical-align: middle;">
+											<a href="${pageContext.request.contextPath}/menu/${menu.menuId}">
+												<c:out value="${menu.menuName}"/>
+											</a>
+										</td>
+										<td class="star-badge" style="vertical-align: middle;">
+											&#9733; <fmt:formatNumber value="${menu.avgRating}" pattern="0.00"/> / 5
+										</td>
+										<td style="text-align: center; vertical-align: middle;">
+											<button type="button" class="mypage-bookmark-btn btn-remove-bookmark"
+												data-menu-id="${menu.menuId}"
+												data-menu-name="<c:out value='${menu.menuName}'/>"
+												data-remove-url="<c:out value='${bookmarkRemoveUrl}'/>"
+												aria-pressed="true"
+												aria-label="<c:out value='${menu.menuName}'/> 북마크 해제">
+												<i class="fa fa-heart" aria-hidden="true"></i>
+											</button>
+										</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
+				</c:if>
 			</div>
 		</div>
 	</div>
